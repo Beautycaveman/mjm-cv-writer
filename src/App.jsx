@@ -137,59 +137,88 @@ const DiamondBanner = ({ height = 56 }) => {
   );
 };
 
-// ── CV DOCUMENT (clean generic print design with translucent bg elements) ─
+// ── CV DOCUMENT - Premium elegant design ─────────────────────────────────
 const CVDocument = ({ cvData }) => {
   const { name, title, why_hire_me, email, phone, location, website, skills, experience, education } = cvData;
+  const hasData = name || why_hire_me || experience.length > 0;
+
+  if (!hasData) return (
+    <div style={{ padding:40, textAlign:"center", color:C.muted, fontFamily:"Georgia,serif", fontSize:14, background:C.white, minHeight:"297mm" }}>
+      Complete the coaching conversation first. Your CV will appear here.
+    </div>
+  );
+
+  const SectionLabel = ({ children }) => (
+    <div style={{ fontSize:7.5, fontWeight:700, color:C.primary, letterSpacing:3, textTransform:"uppercase", fontFamily:"sans-serif", marginBottom:10, paddingBottom:5, borderBottom:`1px solid ${C.light}` }}>
+      {children}
+    </div>
+  );
+
   return (
     <div id="cv-print-area" style={{ width:"210mm", minHeight:"297mm", background:C.white, fontFamily:"Georgia,serif", color:C.dark, margin:"0 auto", boxSizing:"border-box", position:"relative", overflow:"hidden" }}>
 
-      {/* TRANSLUCENT BACKGROUND DECORATIONS */}
-      <div style={{ position:"absolute", top:-60, right:-60, width:280, height:280, borderRadius:"50%", border:"40px solid rgba(184,201,212,0.12)", pointerEvents:"none" }} />
-      <div style={{ position:"absolute", top:20, right:20, width:160, height:160, borderRadius:"50%", border:"20px solid rgba(122,155,176,0.08)", pointerEvents:"none" }} />
-      <div style={{ position:"absolute", bottom:-80, left:-80, width:320, height:320, borderRadius:"50%", border:"50px solid rgba(184,201,212,0.08)", pointerEvents:"none" }} />
-      <svg style={{ position:"absolute", bottom:60, right:20, opacity:0.06, pointerEvents:"none" }} width="80" height="80" viewBox="0 0 80 80">
-        <path d="M40,4 L76,40 L40,76 L4,40 Z" fill="none" stroke="#3a5162" strokeWidth="2" />
-        <path d="M40,16 L64,40 L40,64 L16,40 Z" fill="none" stroke="#3a5162" strokeWidth="2" />
+      {/* SUBTLE BACKGROUND DECORATIONS - very faint, elegant */}
+      <svg style={{ position:"absolute", top:-30, right:-30, opacity:0.04, pointerEvents:"none" }} width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="100" fill="none" stroke="#3a5162" strokeWidth="1"/>
+        <circle cx="110" cy="110" r="75" fill="none" stroke="#3a5162" strokeWidth="1"/>
+        <circle cx="110" cy="110" r="50" fill="none" stroke="#3a5162" strokeWidth="1"/>
       </svg>
-      <svg style={{ position:"absolute", top:120, right:10, opacity:0.05, pointerEvents:"none" }} width="50" height="50" viewBox="0 0 50 50">
-        <path d="M25,2 L48,25 L25,48 L2,25 Z" fill="none" stroke="#3a5162" strokeWidth="1.5" />
+      <svg style={{ position:"absolute", bottom:40, left:-20, opacity:0.03, pointerEvents:"none" }} width="180" height="180" viewBox="0 0 180 180">
+        <path d="M90,5 L175,90 L90,175 L5,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/>
+        <path d="M90,30 L150,90 L90,150 L30,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/>
+        <path d="M90,55 L125,90 L90,125 L55,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/>
+      </svg>
+      <svg style={{ position:"absolute", bottom:120, right:10, opacity:0.035, pointerEvents:"none" }} width="100" height="100" viewBox="0 0 100 100">
+        <path d="M50,3 L97,50 L50,97 L3,50 Z" fill="none" stroke="#3a5162" strokeWidth="1"/>
       </svg>
 
-      {/* HEADER */}
-      <div style={{ background:C.dark, padding:"24px 28px 20px", position:"relative" }}>
-        <div style={{ position:"absolute", bottom:0, right:0, width:120, height:"100%", background:"rgba(58,81,98,0.3)", clipPath:"polygon(100% 0, 100% 100%, 0 100%)" }} />
-        <div style={{ fontSize:32, fontFamily:"sans-serif", fontWeight:900, color:C.white, letterSpacing:3, textTransform:"uppercase", position:"relative" }}>
-          {name || "YOUR NAME"}
-        </div>
-        <div style={{ fontSize:11, color:C.light, fontFamily:"sans-serif", letterSpacing:2, marginTop:5, textTransform:"uppercase", position:"relative" }}>
-          {title || "Professional Title"}
-        </div>
-        <div style={{ display:"flex", gap:20, marginTop:12, flexWrap:"wrap", position:"relative" }}>
-          {[email,phone,location,website].filter(Boolean).map((v,i) => (
-            <span key={i} style={{ fontSize:9.5, color:"rgba(213,221,227,0.85)", fontFamily:"sans-serif", display:"flex", alignItems:"center", gap:4 }}>
-              <span style={{ width:3, height:3, background:C.mid, borderRadius:"50%", display:"inline-block" }} />{v}
-            </span>
-          ))}
+      {/* HEADER - clean white with left color bar */}
+      <div style={{ display:"flex", position:"relative" }}>
+        {/* Left color accent bar */}
+        <div style={{ width:6, background:C.primary, flexShrink:0 }} />
+        {/* Name block */}
+        <div style={{ flex:1, padding:"28px 28px 20px 24px", borderBottom:`1px solid ${C.section}` }}>
+          <div style={{ fontSize:36, fontFamily:"sans-serif", fontWeight:900, color:C.primary, letterSpacing:2, textTransform:"uppercase", lineHeight:1 }}>
+            {name || "YOUR NAME"}
+          </div>
+          <div style={{ fontSize:12, color:C.mid, fontFamily:"sans-serif", letterSpacing:3, marginTop:6, textTransform:"uppercase" }}>
+            {title || "Professional Title"}
+          </div>
+          {/* Contact row */}
+          <div style={{ display:"flex", gap:18, marginTop:12, flexWrap:"wrap" }}>
+            {[email,phone,location,website].filter(Boolean).map((v,i) => (
+              <span key={i} style={{ fontSize:9, color:C.muted, fontFamily:"sans-serif", display:"flex", alignItems:"center", gap:5 }}>
+                <span style={{ width:4, height:4, background:C.light, borderRadius:"50%", display:"inline-block", flexShrink:0 }} />
+                {v}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* ACCENT LINE */}
-      <div style={{ height:4, background:`linear-gradient(90deg, ${C.primary}, ${C.mid}, ${C.light})` }} />
+      {/* BODY - two column */}
+      <div style={{ display:"grid", gridTemplateColumns:"175px 1fr" }}>
 
-      {/* TWO COLUMN */}
-      <div style={{ display:"grid", gridTemplateColumns:"185px 1fr", minHeight:"calc(297mm - 100px)" }}>
+        {/* LEFT COLUMN */}
+        <div style={{ borderRight:`1px solid ${C.section}`, padding:"22px 18px", position:"relative" }}>
+          {/* Faint color wash at bottom of left col */}
+          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"35%", background:"linear-gradient(to top, rgba(213,221,227,0.15), transparent)", pointerEvents:"none" }} />
 
-        {/* LEFT */}
-        <div style={{ background:"#f7f9fb", borderRight:`1px solid ${C.border}`, padding:"20px 16px", position:"relative" }}>
-          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:200, background:"rgba(184,201,212,0.08)", pointerEvents:"none" }} />
+          {/* PROFILE - on left if short, gives better balance */}
+          {why_hire_me && (
+            <div style={{ marginBottom:20 }}>
+              <SectionLabel>Profile</SectionLabel>
+              <div style={{ fontSize:9.5, lineHeight:1.75, color:C.dark }}>{why_hire_me}</div>
+            </div>
+          )}
 
           {skills.length > 0 && (
-            <div style={{ marginBottom:22 }}>
-              <div style={{ fontSize:8, fontWeight:700, color:C.primary, letterSpacing:2.5, textTransform:"uppercase", paddingBottom:6, marginBottom:10, borderBottom:`2px solid ${C.primary}`, fontFamily:"sans-serif" }}>SKILLS</div>
+            <div style={{ marginBottom:20 }}>
+              <SectionLabel>Skills</SectionLabel>
               {skills.map((sk,i) => (
-                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-                  <span style={{ width:5, height:5, background:C.primary, display:"inline-block", flexShrink:0, transform:"rotate(45deg)" }} />
-                  <span style={{ fontSize:10, color:C.dark, fontFamily:"sans-serif" }}>{sk}</span>
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
+                  <span style={{ width:4, height:4, background:C.mid, borderRadius:"50%", flexShrink:0 }} />
+                  <span style={{ fontSize:9.5, color:C.dark, fontFamily:"sans-serif" }}>{sk}</span>
                 </div>
               ))}
             </div>
@@ -197,39 +226,34 @@ const CVDocument = ({ cvData }) => {
 
           {education.length > 0 && (
             <div>
-              <div style={{ fontSize:8, fontWeight:700, color:C.primary, letterSpacing:2.5, textTransform:"uppercase", paddingBottom:6, marginBottom:10, borderBottom:`2px solid ${C.primary}`, fontFamily:"sans-serif" }}>EDUCATION</div>
+              <SectionLabel>Education</SectionLabel>
               {education.map((ed,i) => (
                 <div key={i} style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:10.5, fontWeight:700, color:C.dark, fontFamily:"sans-serif", lineHeight:1.3 }}>{ed.degree}</div>
-                  <div style={{ fontSize:9.5, color:C.primary, fontFamily:"sans-serif", marginTop:2 }}>{ed.institution}</div>
-                  <div style={{ fontSize:9, color:C.muted, fontFamily:"sans-serif", marginBottom:4 }}>{ed.years}</div>
-                  {ed.description && <div style={{ fontSize:9.5, color:C.dark, lineHeight:1.5 }}>{ed.description}</div>}
+                  <div style={{ fontSize:10, fontWeight:700, color:C.dark, fontFamily:"sans-serif", lineHeight:1.3 }}>{ed.degree}</div>
+                  <div style={{ fontSize:9, color:C.primary, fontFamily:"sans-serif", marginTop:2, fontWeight:600 }}>{ed.institution}</div>
+                  <div style={{ fontSize:8.5, color:C.muted, fontFamily:"sans-serif", marginBottom:4, letterSpacing:0.5 }}>{ed.years}</div>
+                  {ed.description && <div style={{ fontSize:9, color:C.muted, lineHeight:1.55 }}>{ed.description}</div>}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* RIGHT */}
-        <div style={{ padding:"20px 22px" }}>
-          {why_hire_me && (
-            <div style={{ marginBottom:20, padding:"14px 16px", background:"rgba(58,81,98,0.04)", borderLeft:`3px solid ${C.primary}`, borderRadius:"0 6px 6px 0" }}>
-              <div style={{ fontSize:8, fontWeight:700, color:C.primary, letterSpacing:2.5, textTransform:"uppercase", marginBottom:8, fontFamily:"sans-serif" }}>PROFILE</div>
-              <div style={{ fontSize:10.5, lineHeight:1.75, color:C.dark }}>{why_hire_me}</div>
-            </div>
-          )}
-
+        {/* RIGHT COLUMN */}
+        <div style={{ padding:"22px 26px" }}>
           {experience.length > 0 && (
             <div>
-              <div style={{ fontSize:8, fontWeight:700, color:C.primary, letterSpacing:2.5, textTransform:"uppercase", paddingBottom:6, marginBottom:12, borderBottom:`2px solid ${C.primary}`, fontFamily:"sans-serif" }}>EXPERIENCE</div>
+              <SectionLabel>Experience</SectionLabel>
               {experience.map((ex,i) => (
-                <div key={i} style={{ marginBottom:16, paddingBottom:14, borderBottom:i<experience.length-1?`1px solid ${C.border}`:"none" }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
-                    <div style={{ fontSize:12, fontWeight:700, color:C.dark, fontFamily:"sans-serif" }}>{ex.title}</div>
-                    <div style={{ fontSize:9, color:C.mid, fontFamily:"sans-serif", whiteSpace:"nowrap", marginLeft:8, background:"rgba(122,155,176,0.1)", padding:"2px 7px", borderRadius:10 }}>{ex.years}</div>
+                <div key={i} style={{ marginBottom:18, paddingBottom:16, borderBottom:i<experience.length-1?`1px solid rgba(213,221,227,0.6)`:"none", position:"relative" }}>
+                  {/* Left dot accent */}
+                  <div style={{ position:"absolute", left:-26, top:5, width:6, height:6, borderRadius:"50%", background:C.primary, border:`2px solid ${C.white}`, outline:`1px solid ${C.light}` }} />
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                    <div style={{ fontSize:11.5, fontWeight:700, color:C.dark, fontFamily:"sans-serif", lineHeight:1.2 }}>{ex.title}</div>
+                    <div style={{ fontSize:8.5, color:C.white, fontFamily:"sans-serif", whiteSpace:"nowrap", marginLeft:10, background:C.primary, padding:"2px 8px", borderRadius:10, flexShrink:0 }}>{ex.years}</div>
                   </div>
-                  <div style={{ fontSize:10, color:C.primary, fontFamily:"sans-serif", marginTop:2, marginBottom:6, fontWeight:600 }}>{ex.company}</div>
-                  <div style={{ fontSize:10.5, color:C.dark, lineHeight:1.7 }}>{ex.description}</div>
+                  <div style={{ fontSize:9.5, color:C.primary, fontFamily:"sans-serif", marginTop:3, marginBottom:7, fontWeight:600, letterSpacing:0.3 }}>{ex.company}</div>
+                  <div style={{ fontSize:10, color:"#333", lineHeight:1.75 }}>{ex.description}</div>
                 </div>
               ))}
             </div>
@@ -238,9 +262,9 @@ const CVDocument = ({ cvData }) => {
       </div>
 
       {/* FOOTER */}
-      <div style={{ background:C.dark, padding:"8px 20px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <div style={{ fontSize:9, color:"rgba(213,221,227,0.5)", fontFamily:"Georgia,serif", fontStyle:"italic", letterSpacing:2 }}>clairo</div>
-        <div style={{ fontSize:8, color:"rgba(213,221,227,0.3)", fontFamily:"sans-serif", letterSpacing:1 }}>YOUR CAREER STORY, MADE CLEAR</div>
+      <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"7px 24px", borderTop:`1px solid ${C.section}`, display:"flex", justifyContent:"space-between", alignItems:"center", background:C.white }}>
+        <div style={{ fontSize:8, color:C.light, fontFamily:"Georgia,serif", fontStyle:"italic", letterSpacing:2 }}>clairo</div>
+        <div style={{ fontSize:7.5, color:C.light, fontFamily:"sans-serif", letterSpacing:1 }}>your career story, made clear</div>
       </div>
     </div>
   );
@@ -271,7 +295,7 @@ const OPENERS = {
   experience: "Good. Now let's talk about your work history. Start with your very first job, even if it feels small or unrelated. What was it, and what years did you work there?",
   education: "Let's talk about your education. Start with the highest level you completed. What did you study, where, and when?",
   skills: "Now let's surface your skills. Based on everything you have shared, what do you think you do better than most people around you?",
-  whyhire: "Here is the big question. If you had 30 seconds to tell someone why they should hire you over anyone else, what would you say? Be bold.",
+  whyhire: "Here is the big question. If you had 30 seconds to tell someone why they should hire you over anyone else, what would you say? Be bold. This becomes your Profile Statement, the first thing a hiring manager reads.",
   contact: "Almost there. What is your full name and the job title you are targeting?",
   done: "You have done it. Your CV is ready. Switch to CV PREVIEW to see your design, or edit anything in CV DATA.",
 };
@@ -318,12 +342,13 @@ export default function App() {
   const messagesEnd = useRef(null);
   const stepRef = useRef("identity");
 
-  if (!accessCode) return <AccessGate onSuccess={code => { localStorage.setItem("clairo_access_code", code); setAccessCode(code); }} />;
-
   useEffect(() => { stepRef.current = step; }, [step]);
   useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior:"smooth" }); }, [messages]);
 
-  const applyExtract = useCallback((ex) => {
+  // Safe to do early return AFTER all hooks
+  if (!accessCode) return <AccessGate onSuccess={code => { localStorage.setItem("clairo_access_code", code); setAccessCode(code); }} />;
+
+  const applyExtract = (ex) => {
     if (!ex) return;
     setCvData(prev => {
       const next = { ...prev };
@@ -351,15 +376,15 @@ export default function App() {
         return { ...prev, education:[...prev.education, ex.new_edu] };
       });
     }
-  }, []);
+  };
 
-  const advanceStep = useCallback((current) => {
+  const advanceStep = (current) => {
     const idx = STEPS.indexOf(current);
     if (idx >= STEPS.length-1) return;
     const next = STEPS[idx+1];
     setStep(next); stepRef.current = next;
     if (next==="done") setTimeout(() => setPanel("preview"), 500);
-  }, []);
+  };
 
   const sendMessage = async () => {
     const text = input.trim();
@@ -533,7 +558,7 @@ export default function App() {
           {/* CV DATA */}
           {panel==="data" && (
             <div style={{ overflowY:"auto", maxHeight:"calc(100vh - 148px)" }}>
-              {[["PROFILE",[["name","Full Name"],["title","Professional Title"],["why_hire_me","Why Should Someone Hire You?","ta4"]]],
+              {[["PROFILE",[["name","Full Name"],["title","Professional Title"],["why_hire_me","Profile Statement","ta4"]]],
                 ["CONTACT",[["email","Email"],["phone","Phone"],["location","Location"],["website","Website / LinkedIn"]]]
               ].map(([heading,fields]) => (
                 <div key={heading} style={{ marginBottom:11 }}>
