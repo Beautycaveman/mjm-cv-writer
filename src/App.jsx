@@ -355,7 +355,7 @@ function AccessGateInner({lang,onSuccess}){
         {checking?(lang.accessChecking||"CHECKING..."):(lang.accessBtn||"BEGIN MY CV SESSION")}
       </button>
       <div style={{marginTop:18,padding:"12px 14px",background:"rgba(213,221,227,0.5)",borderRadius:8,fontSize:11,color:C.muted,fontFamily:"sans-serif",lineHeight:1.6,textAlign:"center"}}>
-        {lang.accessNoCode||"No code yet? Get access at"}<br/><span style={{color:C.primary,fontWeight:700}}>mccalman.gumroad.com/l/clairo</span>
+        {lang.accessNoCode||"No code yet? Get access at"}<br/><span style={{color:C.primary,fontWeight:700}}>getclairo.gumroad.com/l/clairo</span>
       </div>
     </>
   );
