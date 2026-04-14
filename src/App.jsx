@@ -1,34 +1,39 @@
 import { useState, useRef, useEffect } from "react";
 
 const C = {
-  primary: "#3a5162", mid: "#7a9bb0", light: "#b8c9d4",
-  section: "#d5dde3", dark: "#1a1a1a", muted: "#555",
-  white: "#ffffff", accent: "#f5f5f5", border: "#ddd",
+  primary:"#3a5162", mid:"#7a9bb0", light:"#b8c9d4",
+  section:"#d5dde3", dark:"#1a1a1a", muted:"#555",
+  white:"#ffffff", accent:"#f5f5f5", border:"#ddd",
 };
 
-// ── LANGUAGES ─────────────────────────────────────────────────────────────
+// ── VALID CODES ───────────────────────────────────────────────────────────
+const VALID_CODES = [
+  "CLR-3847","CLR-5219","CLR-7463","CLR-2981","CLR-6054",
+  "CLR-8732","CLR-1496","CLR-9285","CLR-4017","CLR-7631",
+  "CLR-3508","CLR-8924","CLR-2763","CLR-5391","CLR-6847",
+  "CLR-4209","CLR-9013","CLR-7582","CLR-3164","CLR-8451",
+];
+
+// ── BUILT-IN LANGUAGES ────────────────────────────────────────────────────
 const LANGS = {
   en: {
     code:"en", label:"English", flag:"🇬🇧",
-    langPrompt:"What language would you like to use for your coaching session?",
-    langSelect:"Select your language to begin",
     tagline:"Your career story, made clear.",
     subtitle:"Most CVs list duties. Yours will show what changed because of you.",
     desc:"Clairo coaches you through 7 guided steps, auto-fills your data, and generates a clean printable CV at the end.",
     features:["7 guided steps","AI coach","Auto-fills data","Duplicate protection","Print-ready CV"],
-    start:"START MY CV",
-    accessTitle:"Enter Your Access Code",
+    start:"START MY CV", accessTitle:"Enter Your Access Code",
     accessDesc:"You received a unique code in your purchase confirmation. Enter it below to begin.",
-    accessPlaceholder:"e.g. CLR-3847",
-    accessBtn:"BEGIN MY CV SESSION",
+    accessPlaceholder:"e.g. CLR-3847", accessBtn:"BEGIN MY CV SESSION",
     accessChecking:"CHECKING...",
     accessError:"This code is not valid. Please check your purchase confirmation and try again.",
     accessNoCode:"No code yet? Get access at",
     coaching:"COACHING", cvdata:"CV DATA", cvpreview:"CV PREVIEW",
     skip:"SKIP", send:"SEND", viewCV:"VIEW MY CV",
     editData:"EDIT DATA", printSave:"PRINT / SAVE PDF",
-    viewSample:"VIEW SAMPLE CV",
-    changeLang:"Change language",
+    viewSample:"VIEW SAMPLE CV", changeLang:"Change language",
+    otherLang:"Other language", otherPlaceholder:"Type your language... e.g. Français, 日本語, Português",
+    otherContinue:"CONTINUE", otherNote:"The coach will respond fully in your chosen language.",
     stepLabels:{ identity:"Who You Are", experience:"Your Experience", education:"Education", skills:"Your Skills", whyhire:"Why Hire You", contact:"Contact Details", done:"Review & Done" },
     hints:{
       identity:["Tip: Avoid words like 'hardworking'. Give a specific example instead.","Think: When did someone last come to you for help? What kind of help?","Ask yourself: What problem do I naturally notice that others walk past?"],
@@ -49,31 +54,26 @@ const LANGS = {
       done:"You have done it. Your CV is ready. Switch to CV PREVIEW to see your design, or edit anything in CV DATA.",
     },
     cvLabels:{ profile:"Profile", skills:"Skills", education:"Education", experience:"Experience" },
-    done:"%% DONE",
-    testimonialTitle:"What people are saying",
-    sampleCVTitle:"See what your CV could look like",
+    done:"%% DONE", testimonialTitle:"What people are saying", sampleCVTitle:"See what your CV could look like",
   },
   nl: {
     code:"nl", label:"Nederlands", flag:"🇳🇱",
-    langPrompt:"In welke taal wil je je coaching sessie doen?",
-    langSelect:"Kies je taal om te beginnen",
     tagline:"Jouw carrièreverhaal, helder gemaakt.",
     subtitle:"De meeste cv's sommen taken op. Het jouwe laat zien wat er door jou veranderde.",
     desc:"Clairo begeleidt je door 7 stappen, vult je gegevens automatisch in en genereert een professioneel cv.",
-    features:["7 begeleide stappen","AI coach","Automatisch invullen","Dubbele invoer preventie","Printklaar cv"],
-    start:"MAAK MIJN CV",
-    accessTitle:"Voer je toegangscode in",
+    features:["7 begeleide stappen","AI coach","Automatisch invullen","Preventie duplicaten","Printklaar cv"],
+    start:"MAAK MIJN CV", accessTitle:"Voer je toegangscode in",
     accessDesc:"Je ontving een unieke code in je aankoopbevestiging. Voer deze hieronder in.",
-    accessPlaceholder:"bijv. CLR-3847",
-    accessBtn:"BEGIN MIJN CV SESSIE",
+    accessPlaceholder:"bijv. CLR-3847", accessBtn:"BEGIN MIJN CV SESSIE",
     accessChecking:"CONTROLEREN...",
     accessError:"Deze code is niet geldig. Controleer je aankoopbevestiging en probeer opnieuw.",
     accessNoCode:"Nog geen code? Koop toegang op",
     coaching:"COACHING", cvdata:"CV GEGEVENS", cvpreview:"CV VOORBEELD",
     skip:"OVERSLAAN", send:"VERSTUUR", viewCV:"BEKIJK MIJN CV",
     editData:"GEGEVENS BEWERKEN", printSave:"AFDRUKKEN / PDF",
-    viewSample:"VOORBEELD CV BEKIJKEN",
-    changeLang:"Taal wijzigen",
+    viewSample:"VOORBEELD CV BEKIJKEN", changeLang:"Taal wijzigen",
+    otherLang:"Andere taal", otherPlaceholder:"Typ je taal... bijv. Français, 日本語, Português",
+    otherContinue:"DOORGAAN", otherNote:"De coach reageert volledig in jouw gekozen taal.",
     stepLabels:{ identity:"Wie Ben Jij", experience:"Jouw Ervaring", education:"Opleiding", skills:"Jouw Vaardigheden", whyhire:"Waarom Jij", contact:"Contactgegevens", done:"Beoordelen & Klaar" },
     hints:{
       identity:["Tip: Vermijd woorden als 'hardwerkend'. Geef een concreet voorbeeld.","Denk: Wanneer vroegen mensen jou het laatste om hulp?","Vraag jezelf: Welk probleem zie ik dat anderen voorbij lopen?"],
@@ -85,7 +85,7 @@ const LANGS = {
       done:[],
     },
     openers:{
-      identity:"Welkom bij Clairo. Mijn taak is om diep te graven en het echte verhaal naar boven te halen over wie jij bent. Geen templates, geen hokjes. Laten we beginnen: vergeet functietitels even. Hoe zou jij jezelf omschrijven als persoon? Wat drijft jou?",
+      identity:"Welkom bij Clairo. Mijn taak is om diep te graven en het echte verhaal naar boven te halen over wie jij bent. Geen templates, geen hokjes. Vergeet functietitels even. Hoe zou jij jezelf omschrijven als persoon? Wat drijft jou?",
       experience:"Goed. Laten we het nu hebben over jouw werkgeschiedenis. Begin bij je allereerste baan, ook als die klein of niet relevant lijkt. Wat was het, en in welke jaren werkte je daar?",
       education:"Laten we het hebben over jouw opleiding. Begin bij het hoogste niveau dat je hebt afgerond. Wat studeerde je, waar en wanneer?",
       skills:"Laten we nu jouw vaardigheden naar boven halen. Op basis van alles wat je hebt gedeeld, wat denk je dat jij beter doet dan de meeste mensen om je heen?",
@@ -94,31 +94,26 @@ const LANGS = {
       done:"Je hebt het gedaan. Je cv is klaar. Schakel over naar CV VOORBEELD om je ontwerp te zien.",
     },
     cvLabels:{ profile:"Profiel", skills:"Vaardigheden", education:"Opleiding", experience:"Ervaring" },
-    done:"%% KLAAR",
-    testimonialTitle:"Wat mensen zeggen",
-    sampleCVTitle:"Zo kan jouw cv eruitzien",
+    done:"%% KLAAR", testimonialTitle:"Wat mensen zeggen", sampleCVTitle:"Zo kan jouw cv eruitzien",
   },
   es: {
     code:"es", label:"Español", flag:"🇪🇸",
-    langPrompt:"¿En qué idioma quieres hacer tu sesión de coaching?",
-    langSelect:"Selecciona tu idioma para comenzar",
     tagline:"Tu historia profesional, hecha clara.",
     subtitle:"La mayoría de los CV listan tareas. El tuyo mostrará lo que cambió gracias a ti.",
     desc:"Clairo te guía en 7 pasos, llena tus datos automáticamente y genera un CV profesional listo para imprimir.",
-    features:["7 pasos guiados","Coach con IA","Llenado automático","Prevención de duplicados","CV listo para imprimir"],
-    start:"CREAR MI CV",
-    accessTitle:"Ingresa tu código de acceso",
+    features:["7 pasos guiados","Coach con IA","Llenado automático","Prevención duplicados","CV listo para imprimir"],
+    start:"CREAR MI CV", accessTitle:"Ingresa tu código de acceso",
     accessDesc:"Recibiste un código único en tu confirmación de compra. Ingrésalo abajo para comenzar.",
-    accessPlaceholder:"ej. CLR-3847",
-    accessBtn:"COMENZAR MI SESIÓN",
+    accessPlaceholder:"ej. CLR-3847", accessBtn:"COMENZAR MI SESIÓN",
     accessChecking:"VERIFICANDO...",
     accessError:"Este código no es válido. Verifica tu confirmación de compra e intenta de nuevo.",
     accessNoCode:"¿Sin código? Obtén acceso en",
     coaching:"COACHING", cvdata:"DATOS CV", cvpreview:"VISTA PREVIA",
     skip:"OMITIR", send:"ENVIAR", viewCV:"VER MI CV",
     editData:"EDITAR DATOS", printSave:"IMPRIMIR / PDF",
-    viewSample:"VER CV DE EJEMPLO",
-    changeLang:"Cambiar idioma",
+    viewSample:"VER CV DE EJEMPLO", changeLang:"Cambiar idioma",
+    otherLang:"Otro idioma", otherPlaceholder:"Escribe tu idioma... ej. Français, 日本語, Português",
+    otherContinue:"CONTINUAR", otherNote:"El coach responderá completamente en tu idioma elegido.",
     stepLabels:{ identity:"Quién Eres", experience:"Tu Experiencia", education:"Educación", skills:"Tus Habilidades", whyhire:"Por Qué Tú", contact:"Datos de Contacto", done:"Revisar y Listo" },
     hints:{
       identity:["Consejo: Evita palabras como 'trabajador'. Da un ejemplo específico.","Piensa: ¿Cuándo fue la última vez que alguien vino a pedirte ayuda?","Pregúntate: ¿Qué problema noto yo que otros pasan por alto?"],
@@ -130,68 +125,52 @@ const LANGS = {
       done:[],
     },
     openers:{
-      identity:"Bienvenido a Clairo. Mi trabajo es profundizar y sacar a la luz la historia real de quién eres. Sin plantillas, sin casillas. Empecemos: olvida los títulos de trabajo por un momento. ¿Cómo te describirías como persona? ¿Qué te impulsa?",
-      experience:"Bien. Ahora hablemos de tu historial laboral. Empieza con tu primer trabajo, aunque parezca pequeño o poco relevante. ¿Cuál fue y en qué años trabajaste allí?",
+      identity:"Bienvenido a Clairo. Mi trabajo es profundizar y sacar a la luz la historia real de quién eres. Sin plantillas, sin casillas. Olvida los títulos de trabajo por un momento. ¿Cómo te describirías como persona? ¿Qué te impulsa?",
+      experience:"Bien. Ahora hablemos de tu historial laboral. Empieza con tu primer trabajo, aunque parezca pequeño. ¿Cuál fue y en qué años trabajaste allí?",
       education:"Hablemos de tu educación. Empieza por el nivel más alto que completaste. ¿Qué estudiaste, dónde y cuándo?",
-      skills:"Ahora vamos a descubrir tus habilidades. Basándote en todo lo que has compartido, ¿qué crees que haces mejor que la mayoría de las personas a tu alrededor?",
-      whyhire:"Esta es la gran pregunta. Si tuvieras 30 segundos para decirle a alguien por qué debería contratarte a ti sobre todos los demás, ¿qué dirías? Sé audaz.",
+      skills:"Ahora vamos a descubrir tus habilidades. Basándote en todo lo que has compartido, ¿qué crees que haces mejor que la mayoría?",
+      whyhire:"Esta es la gran pregunta. Si tuvieras 30 segundos para decirle a alguien por qué debería contratarte, ¿qué dirías? Sé audaz.",
       contact:"Casi terminamos. ¿Cuál es tu nombre completo y el título del puesto al que aspiras?",
       done:"Lo lograste. Tu CV está listo. Cambia a VISTA PREVIA para ver tu diseño.",
     },
     cvLabels:{ profile:"Perfil", skills:"Habilidades", education:"Educación", experience:"Experiencia" },
-    done:"%% LISTO",
-    testimonialTitle:"Lo que dicen las personas",
-    sampleCVTitle:"Así podría verse tu CV",
+    done:"%% LISTO", testimonialTitle:"Lo que dicen las personas", sampleCVTitle:"Así podría verse tu CV",
   },
 };
 
 const STEPS = ["identity","experience","education","skills","whyhire","contact","done"];
 
-const VALID_CODES = [
-  "CLR-3847","CLR-5219","CLR-7463","CLR-2981","CLR-6054",
-  "CLR-8732","CLR-1496","CLR-9285","CLR-4017","CLR-7631",
-  "CLR-3508","CLR-8924","CLR-2763","CLR-5391","CLR-6847",
-  "CLR-4209","CLR-9013","CLR-7582","CLR-3164","CLR-8451",
-];
-
-const getUsageLog = () => { try{return JSON.parse(localStorage.getItem("clairo_usage")||"[]");}catch{return[];} };
-const saveUsageLog = (log) => localStorage.setItem("clairo_usage",JSON.stringify(log));
-const logCodeUse = (code) => {
-  const log=getUsageLog();
-  const ex=log.find(e=>e.code===code);
-  if(ex){ex.uses=(ex.uses||1)+1;ex.lastUsed=new Date().toISOString();}
-  else log.push({code,firstUsed:new Date().toISOString(),lastUsed:new Date().toISOString(),uses:1});
-  saveUsageLog(log);
-};
-
-// ── DUMMY CV - US based, globally relatable ───────────────────────────────
 const DUMMY_CV = {
-  name:"JORDAN A. REED",
-  title:"Senior Product Manager",
+  name:"JORDAN A. REED", title:"Senior Product Manager",
   why_hire_me:"I do not just manage products, I find the gap between what users are asking for and what they actually need. At every company I have worked at, I have shipped features that changed retention numbers, reduced churn, and opened new revenue lines. I am not a coordinator. I am the person who sees three steps ahead and gets the team there without losing anyone along the way.",
-  email:"jordan.reed@email.com",
-  phone:"+1 (312) 555 0194",
-  location:"Chicago, IL, United States",
-  website:"linkedin.com/in/jordanreed",
-  skills:["Product Strategy","Agile / Scrum","User Research","Roadmap Planning","Stakeholder Management","SQL & Data Analysis","Figma","A/B Testing","Go-to-Market Planning"],
+  email:"jordan.reed@email.com", phone:"+1 (312) 555 0194", location:"Chicago, IL, United States", website:"linkedin.com/in/jordanreed",
+  skills:["Product Strategy","Agile / Scrum","User Research","Roadmap Planning","Stakeholder Management","SQL & Data Analysis","Figma","A/B Testing"],
   experience:[
-    {title:"Senior Product Manager",company:"Foresight Health Technologies",years:"2021 - Present",description:"Led the redesign of the core patient onboarding flow which reduced drop-off rate by 34% and increased activation by 28% within 90 days of launch. Built and managed a cross-functional team of 11 across engineering, design, and compliance. Presented quarterly roadmap to a board of 14 including two external investors, receiving full approval for a $2.1M feature expansion budget."},
-    {title:"Product Manager",company:"Loopline Software",years:"2018 - 2021",description:"Owned the B2B analytics dashboard from concept to launch, a product that became the top-cited feature in 67% of enterprise renewal conversations. Ran 40+ user interviews across three market segments to redefine the core value proposition. Reduced average sprint cycle time by 22% by introducing a structured discovery process that cut scope changes mid-sprint."},
-    {title:"Associate Product Analyst",company:"RetailEdge Inc.",years:"2016 - 2018",description:"Analysed customer behavioural data across 14 retail clients to identify friction points in checkout flows. Produced a findings report that led to a redesign adopted by 9 of the 14 clients, with an average cart abandonment reduction of 18%. Promoted to full product role 8 months ahead of standard timeline."},
+    {title:"Senior Product Manager",company:"Foresight Health Technologies",years:"2021 - Present",description:"Led the redesign of the core patient onboarding flow which reduced drop-off by 34% and increased activation by 28% within 90 days of launch. Built and managed a cross-functional team of 11. Presented quarterly roadmap to a board including two external investors, receiving full approval for a $2.1M feature expansion budget."},
+    {title:"Product Manager",company:"Loopline Software",years:"2018 - 2021",description:"Owned the B2B analytics dashboard from concept to launch. It became the top-cited feature in 67% of enterprise renewal conversations. Ran 40+ user interviews across three market segments. Reduced average sprint cycle time by 22% by introducing a structured discovery process."},
+    {title:"Associate Product Analyst",company:"RetailEdge Inc.",years:"2016 - 2018",description:"Analysed customer data across 14 retail clients to identify friction points in checkout flows. Produced a findings report that led to a redesign adopted by 9 of the 14 clients, with an average cart abandonment reduction of 18%. Promoted 8 months ahead of schedule."},
   ],
   education:[
-    {degree:"Bachelor of Science in Business Administration",institution:"University of Illinois Urbana-Champaign",years:"2012 - 2016",description:"Concentration in Information Systems. Graduated with honours. Senior capstone project on digital product adoption in healthcare received departmental recognition."},
+    {degree:"Bachelor of Science in Business Administration",institution:"University of Illinois Urbana-Champaign",years:"2012 - 2016",description:"Concentration in Information Systems. Graduated with honours. Senior capstone on digital product adoption in healthcare received departmental recognition."},
     {degree:"Certified Scrum Product Owner (CSPO)",institution:"Scrum Alliance",years:"2019",description:""},
     {degree:"Google Data Analytics Certificate",institution:"Google / Coursera",years:"2020",description:""},
   ],
 };
 
-// ── TESTIMONIALS ──────────────────────────────────────────────────────────
 const TESTIMONIALS = [
-  {name:"Sarah K.",role:"Marketing Coordinator, Amsterdam",text:"I have been trying to write my CV for months. Clairo asked me one question and I suddenly remembered achievements I had completely forgotten about. My CV went from two paragraphs to two pages of real content.",stars:5},
-  {name:"Ravi P.",role:"Junior Engineer, Bangalore",text:"I am a humble person and I always undersell myself. Clairo pushed me to go deeper every single time I gave a short answer. The coach would not let me settle. The CV I got felt like it was written by someone who really believed in me.",stars:5},
-  {name:"Amara D.",role:"Operations Manager, Accra",text:"What surprised me was how much the coach connected my early jobs to my current career in a way I never would have thought to do myself. Hiring managers have noticed the difference.",stars:5},
+  {name:"Sarah K.",role:"Marketing Coordinator, Amsterdam",text:"Clairo asked me one question and I remembered achievements I had completely forgotten. My CV went from two paragraphs to two full pages of real content.",stars:5},
+  {name:"Ravi P.",role:"Junior Engineer, Bangalore",text:"I always undersell myself. Clairo pushed me deeper every time I gave a short answer. The coach would not let me settle. The CV felt like it was written by someone who really believed in me.",stars:5},
+  {name:"Amara D.",role:"Operations Manager, Accra",text:"It connected my early jobs to my current career in a way I never would have done myself. Hiring managers have noticed the difference.",stars:5},
 ];
+
+const getUsageLog = () => { try{return JSON.parse(localStorage.getItem("clairo_usage")||"[]");}catch{return[];} };
+const saveUsageLog = (log) => localStorage.setItem("clairo_usage",JSON.stringify(log));
+const logCodeUse = (code) => {
+  const log=getUsageLog(); const ex=log.find(e=>e.code===code);
+  if(ex){ex.uses=(ex.uses||1)+1;ex.lastUsed=new Date().toISOString();}
+  else log.push({code,firstUsed:new Date().toISOString(),lastUsed:new Date().toISOString(),uses:1});
+  saveUsageLog(log);
+};
 
 // ── FLOATING BG ───────────────────────────────────────────────────────────
 const FloatingBg = () => (
@@ -210,41 +189,25 @@ const FloatingBg = () => (
 const DiamondBanner = ({height=52}) => {
   const [width,setWidth]=useState(900);
   const ref=useRef();
-  useEffect(()=>{
-    const obs=new ResizeObserver(([e])=>setWidth(e.contentRect.width));
-    if(ref.current)obs.observe(ref.current);
-    return()=>obs.disconnect();
-  },[]);
+  useEffect(()=>{ const obs=new ResizeObserver(([e])=>setWidth(e.contentRect.width)); if(ref.current)obs.observe(ref.current); return()=>obs.disconnect(); },[]);
   const oh=height*0.82,mh=oh*0.65,ih=oh*0.30,sx=oh*1.05;
-  const pts=[];for(let x=-oh;x<width+oh;x+=sx)pts.push(x);
+  const pts=[]; for(let x=-oh;x<width+oh;x+=sx)pts.push(x);
   const cy=height/2;
   const dp=(cx,cy,h)=>`M${cx},${cy-h} L${cx+h},${cy} L${cx},${cy+h} L${cx-h},${cy} Z`;
-  return(
-    <div ref={ref} style={{width:"100%"}}>
-      <svg width={width} height={height} style={{display:"block"}}>
-        <rect width={width} height={height} fill={C.primary}/>
-        {pts.map((cx,i)=><g key={i}><path d={dp(cx,cy,oh)} fill={C.light}/><path d={dp(cx,cy,mh)} fill={C.mid}/><path d={dp(cx,cy,ih)} fill={C.primary}/></g>)}
-      </svg>
-    </div>
-  );
+  return(<div ref={ref} style={{width:"100%"}}><svg width={width} height={height} style={{display:"block"}}><rect width={width} height={height} fill={C.primary}/>{pts.map((cx,i)=><g key={i}><path d={dp(cx,cy,oh)} fill={C.light}/><path d={dp(cx,cy,mh)} fill={C.mid}/><path d={dp(cx,cy,ih)} fill={C.primary}/></g>)}</svg></div>);
 };
 
 // ── CV DOCUMENT ───────────────────────────────────────────────────────────
 const CVDocument = ({cvData,lang}) => {
   const {name,title,why_hire_me,email,phone,location,website,skills,experience,education}=cvData;
-  const L=lang.cvLabels;
+  const L=lang ? lang.cvLabels : {profile:"Profile",skills:"Skills",education:"Education",experience:"Experience"};
+  const hasData=name||why_hire_me||experience.length>0;
+  if(!hasData) return <div style={{padding:40,textAlign:"center",color:C.muted,fontFamily:"Georgia,serif",fontSize:13,background:C.white,minHeight:"297mm"}}>Complete the coaching conversation first.</div>;
   const SL=({children})=>(<div style={{fontSize:7.5,fontWeight:700,color:C.primary,letterSpacing:3,textTransform:"uppercase",fontFamily:"sans-serif",marginBottom:10,paddingBottom:5,borderBottom:`1px solid ${C.light}`}}>{children}</div>);
   return(
     <div id="cv-print-area" style={{width:"210mm",minHeight:"297mm",background:C.white,fontFamily:"Georgia,serif",color:C.dark,margin:"0 auto",boxSizing:"border-box",position:"relative",overflow:"hidden"}}>
-      <svg style={{position:"absolute",top:-30,right:-30,opacity:0.04,pointerEvents:"none"}} width="220" height="220" viewBox="0 0 220 220">
-        <circle cx="110" cy="110" r="100" fill="none" stroke="#3a5162" strokeWidth="1"/>
-        <circle cx="110" cy="110" r="75" fill="none" stroke="#3a5162" strokeWidth="1"/>
-        <circle cx="110" cy="110" r="50" fill="none" stroke="#3a5162" strokeWidth="1"/>
-      </svg>
-      <svg style={{position:"absolute",bottom:40,left:-20,opacity:0.03,pointerEvents:"none"}} width="180" height="180" viewBox="0 0 180 180">
-        <path d="M90,5 L175,90 L90,175 L5,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/>
-        <path d="M90,30 L150,90 L90,150 L30,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/>
-      </svg>
+      <svg style={{position:"absolute",top:-30,right:-30,opacity:0.04,pointerEvents:"none"}} width="220" height="220" viewBox="0 0 220 220"><circle cx="110" cy="110" r="100" fill="none" stroke="#3a5162" strokeWidth="1"/><circle cx="110" cy="110" r="75" fill="none" stroke="#3a5162" strokeWidth="1"/><circle cx="110" cy="110" r="50" fill="none" stroke="#3a5162" strokeWidth="1"/></svg>
+      <svg style={{position:"absolute",bottom:40,left:-20,opacity:0.03,pointerEvents:"none"}} width="180" height="180" viewBox="0 0 180 180"><path d="M90,5 L175,90 L90,175 L5,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/><path d="M90,30 L150,90 L90,150 L30,90 Z" fill="none" stroke="#3a5162" strokeWidth="1.5"/></svg>
       <div style={{display:"flex",position:"relative"}}>
         <div style={{width:6,background:C.primary,flexShrink:0}}/>
         <div style={{flex:1,padding:"26px 28px 18px 22px",borderBottom:`1px solid ${C.section}`}}>
@@ -276,84 +239,10 @@ const CVDocument = ({cvData,lang}) => {
 
 // ── OPEN SAMPLE CV IN NEW TAB ─────────────────────────────────────────────
 const openSampleCV = (lang) => {
-  const dummy = DUMMY_CV;
-  const L = lang.cvLabels;
-  const html = `<!DOCTYPE html><html><head><title>Sample CV - Clairo</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:#f4f7f9;display:flex;justify-content:center;padding:40px 20px;font-family:Georgia,serif;}
-    .cv{width:210mm;min-height:297mm;background:#fff;position:relative;overflow:hidden;}
-    .bar{width:6px;background:#3a5162;flex-shrink:0;}
-    .header{display:flex;border-bottom:1px solid #d5dde3;}
-    .header-content{flex:1;padding:26px 28px 18px 22px;}
-    .name{font-size:34px;font-family:sans-serif;font-weight:900;color:#3a5162;letter-spacing:2px;text-transform:uppercase;line-height:1;}
-    .title{font-size:11px;color:#7a9bb0;font-family:sans-serif;letter-spacing:3px;margin-top:5px;text-transform:uppercase;}
-    .contact{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
-    .contact span{font-size:9px;color:#555;font-family:sans-serif;display:flex;align-items:center;gap:5px;}
-    .dot{width:4px;height:4px;background:#b8c9d4;border-radius:50%;display:inline-block;flex-shrink:0;}
-    .body{display:grid;grid-template-columns:175px 1fr;}
-    .left{border-right:1px solid #d5dde3;padding:20px 16px;}
-    .right{padding:20px 24px;}
-    .section-label{font-size:7.5px;font-weight:700;color:#3a5162;letter-spacing:3px;text-transform:uppercase;font-family:sans-serif;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #b8c9d4;}
-    .skill{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
-    .skill-dot{width:4px;height:4px;background:#7a9bb0;border-radius:50%;flex-shrink:0;}
-    .skill-text{font-size:9.5px;color:#1a1a1a;font-family:sans-serif;}
-    .edu{margin-bottom:12px;}
-    .edu-degree{font-size:10px;font-weight:700;color:#1a1a1a;font-family:sans-serif;line-height:1.3;}
-    .edu-inst{font-size:9px;color:#3a5162;font-family:sans-serif;margin-top:2px;font-weight:600;}
-    .edu-years{font-size:8.5px;color:#555;font-family:sans-serif;margin-bottom:3px;}
-    .edu-desc{font-size:9px;color:#555;line-height:1.55;}
-    .profile-text{font-size:9.5px;line-height:1.75;color:#1a1a1a;margin-bottom:18px;}
-    .exp{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(213,221,227,0.6);position:relative;}
-    .exp:last-child{border-bottom:none;}
-    .exp-dot{position:absolute;left:-24px;top:5px;width:6px;height:6px;border-radius:50%;background:#3a5162;border:2px solid #fff;outline:1px solid #b8c9d4;}
-    .exp-header{display:flex;justify-content:space-between;align-items:flex-start;}
-    .exp-title{font-size:11.5px;font-weight:700;color:#1a1a1a;font-family:sans-serif;line-height:1.2;}
-    .exp-years{font-size:8.5px;color:#fff;font-family:sans-serif;white-space:nowrap;margin-left:10px;background:#3a5162;padding:2px 8px;border-radius:10px;flex-shrink:0;}
-    .exp-company{font-size:9.5px;color:#3a5162;font-family:sans-serif;margin-top:3px;margin-bottom:6px;font-weight:600;}
-    .exp-desc{font-size:10px;color:#333;line-height:1.75;}
-    .bg-circle{position:absolute;fill:none;stroke:#3a5162;}
-    @media print{body{padding:0;}@page{margin:0;size:A4;}}
-  </style></head><body>
-  <div class="cv">
-    <svg style="position:absolute;top:-30px;right:-30px;opacity:0.04;pointer-events:none;" width="220" height="220" viewBox="0 0 220 220">
-      <circle cx="110" cy="110" r="100" class="bg-circle" stroke-width="1"/>
-      <circle cx="110" cy="110" r="75" class="bg-circle" stroke-width="1"/>
-      <circle cx="110" cy="110" r="50" class="bg-circle" stroke-width="1"/>
-    </svg>
-    <div class="header">
-      <div class="bar"></div>
-      <div class="header-content">
-        <div class="name">${dummy.name}</div>
-        <div class="title">${dummy.title}</div>
-        <div class="contact">
-          <span><span class="dot"></span>${dummy.email}</span>
-          <span><span class="dot"></span>${dummy.phone}</span>
-          <span><span class="dot"></span>${dummy.location}</span>
-          <span><span class="dot"></span>${dummy.website}</span>
-        </div>
-      </div>
-    </div>
-    <div class="body">
-      <div class="left">
-        <div class="section-label">${L.profile}</div>
-        <div class="profile-text">${dummy.why_hire_me}</div>
-        <div class="section-label">${L.skills}</div>
-        ${dummy.skills.map(sk=>`<div class="skill"><span class="skill-dot"></span><span class="skill-text">${sk}</span></div>`).join("")}
-        <br/>
-        <div class="section-label">${L.education}</div>
-        ${dummy.education.map(ed=>`<div class="edu"><div class="edu-degree">${ed.degree}</div><div class="edu-inst">${ed.institution}</div><div class="edu-years">${ed.years}</div>${ed.description?`<div class="edu-desc">${ed.description}</div>`:""}</div>`).join("")}
-      </div>
-      <div class="right">
-        <div class="section-label">${L.experience}</div>
-        ${dummy.experience.map(ex=>`<div class="exp"><div class="exp-dot"></div><div class="exp-header"><div class="exp-title">${ex.title}</div><div class="exp-years">${ex.years}</div></div><div class="exp-company">${ex.company}</div><div class="exp-desc">${ex.description}</div></div>`).join("")}
-      </div>
-    </div>
-  </div>
-  </body></html>`;
-  const w = window.open("","_blank");
-  w.document.write(html);
-  w.document.close();
+  const L = lang ? lang.cvLabels : {profile:"Profile",skills:"Skills",education:"Education",experience:"Experience"};
+  const d = DUMMY_CV;
+  const html = `<!DOCTYPE html><html><head><title>Sample CV - Clairo</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#f4f7f9;display:flex;justify-content:center;padding:40px 20px;font-family:Georgia,serif;}.cv{width:210mm;min-height:297mm;background:#fff;position:relative;overflow:hidden;}.bar{width:6px;background:#3a5162;flex-shrink:0;}.header{display:flex;border-bottom:1px solid #d5dde3;}.hc{flex:1;padding:26px 28px 18px 22px;}.name{font-size:34px;font-family:sans-serif;font-weight:900;color:#3a5162;letter-spacing:2px;text-transform:uppercase;line-height:1;}.title{font-size:11px;color:#7a9bb0;font-family:sans-serif;letter-spacing:3px;margin-top:5px;text-transform:uppercase;}.contact{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}.contact span{font-size:9px;color:#555;font-family:sans-serif;display:flex;align-items:center;gap:5px;}.cdot{width:4px;height:4px;background:#b8c9d4;border-radius:50%;display:inline-block;flex-shrink:0;}.body{display:grid;grid-template-columns:175px 1fr;}.left{border-right:1px solid #d5dde3;padding:20px 16px;}.right{padding:20px 24px;}.sl{font-size:7.5px;font-weight:700;color:#3a5162;letter-spacing:3px;text-transform:uppercase;font-family:sans-serif;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #b8c9d4;}.skill{display:flex;align-items:center;gap:7px;margin-bottom:5px;}.sdot{width:4px;height:4px;background:#7a9bb0;border-radius:50%;flex-shrink:0;}.st{font-size:9.5px;color:#1a1a1a;font-family:sans-serif;}.edu{margin-bottom:12px;}.ed{font-size:10px;font-weight:700;color:#1a1a1a;font-family:sans-serif;line-height:1.3;}.ei{font-size:9px;color:#3a5162;font-family:sans-serif;margin-top:2px;font-weight:600;}.ey{font-size:8.5px;color:#555;font-family:sans-serif;margin-bottom:3px;}.pt{font-size:9.5px;line-height:1.75;color:#1a1a1a;margin-bottom:18px;}.exp{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(213,221,227,0.6);position:relative;}.exp:last-child{border-bottom:none;}.edot{position:absolute;left:-24px;top:5px;width:6px;height:6px;border-radius:50%;background:#3a5162;border:2px solid #fff;outline:1px solid #b8c9d4;}.eh{display:flex;justify-content:space-between;align-items:flex-start;}.et{font-size:11.5px;font-weight:700;color:#1a1a1a;font-family:sans-serif;line-height:1.2;}.ey2{font-size:8.5px;color:#fff;font-family:sans-serif;white-space:nowrap;margin-left:10px;background:#3a5162;padding:2px 8px;border-radius:10px;flex-shrink:0;}.ec{font-size:9.5px;color:#3a5162;font-family:sans-serif;margin-top:3px;margin-bottom:6px;font-weight:600;}.ed2{font-size:10px;color:#333;line-height:1.75;}@media print{body{padding:0;}@page{margin:0;size:A4;}}</style></head><body><div class="cv"><div class="header"><div class="bar"></div><div class="hc"><div class="name">${d.name}</div><div class="title">${d.title}</div><div class="contact"><span><span class="cdot"></span>${d.email}</span><span><span class="cdot"></span>${d.phone}</span><span><span class="cdot"></span>${d.location}</span><span><span class="cdot"></span>${d.website}</span></div></div></div><div class="body"><div class="left"><div class="sl">${L.profile}</div><div class="pt">${d.why_hire_me}</div><div class="sl">${L.skills}</div>${d.skills.map(sk=>`<div class="skill"><span class="sdot"></span><span class="st">${sk}</span></div>`).join("")}<br/><div class="sl">${L.education}</div>${d.education.map(ed=>`<div class="edu"><div class="ed">${ed.degree}</div><div class="ei">${ed.institution}</div><div class="ey">${ed.years}</div>${ed.description?`<div style="font-size:9px;color:#555;line-height:1.55;">${ed.description}</div>`:""}</div>`).join("")}</div><div class="right"><div class="sl">${L.experience}</div>${d.experience.map(ex=>`<div class="exp"><div class="edot"></div><div class="eh"><div class="et">${ex.title}</div><div class="ey2">${ex.years}</div></div><div class="ec">${ex.company}</div><div class="ed2">${ex.description}</div></div>`).join("")}</div></div></div></body></html>`;
+  const w=window.open("","_blank"); w.document.write(html); w.document.close();
 };
 
 // ── DUPLICATE MODAL ───────────────────────────────────────────────────────
@@ -373,27 +262,27 @@ const DuplicateModal = ({pending,onConfirm,onMerge,onSkip}) => (
   </div>
 );
 
-// ── STARS ─────────────────────────────────────────────────────────────────
-const Stars = ({n}) => <span style={{color:"#f0a500",fontSize:13}}>{"★".repeat(n)}</span>;
-
-// ── BUILD SYSTEM PROMPT ───────────────────────────────────────────────────
-const buildSystemPrompt = (lang,step,cvData) => {
+// ── SYSTEM PROMPT ─────────────────────────────────────────────────────────
+const buildPrompt = (langLabel,step,stepLabels,cvData) => {
   const idx=STEPS.indexOf(step);
-  const nextLabel=lang.stepLabels[STEPS[idx+1]]||"done";
-  return `You are Clairo, a warm, sharp CV coach. Respond ONLY in ${lang.label}.
+  const nextLabel=stepLabels[STEPS[idx+1]]||"done";
+  return `You are Clairo, a warm, sharp CV coach. Respond ONLY in ${langLabel}. Every single word of your response must be in ${langLabel}. Never switch to English or any other language mid-response, including transition sentences.
 
 Rules:
-- Never use em dashes.
-- One question at a time.
-- Mirror back what you hear.
+- NEVER use em dashes (--) or (—) anywhere. Use commas, hyphens (-), or periods instead.
+- NEVER write about the user in third person. Always address them directly using "you" and "your". Never say "they", "their", "the candidate", or refer to the user as if describing someone else.
+- One question at a time. Never overwhelm.
+- Mirror back what you hear, directly to them: "So what I'm hearing is, you..."
 - Reframe negatives as strengths.
 - Push for specifics and quantified impact.
 - Keep responses to 2-4 sentences then ONE question.
-- When step is done, output STEP_COMPLETE on its own line then a bridge sentence.
+- When step is done, output STEP_COMPLETE on its own line then a bridge sentence IN ${langLabel}.
 
-CRITICAL: If the user gives a short answer (under 15 words) or vague traits like hardworking, dedicated, passionate, team player - push back. Ask for a specific moment with context, action, and result. Do not move on until they give depth.
+CRITICAL - IDENTITY PROTECTION: You are ONLY a CV coach. You NEVER roleplay as another person, generate fictional job scenarios, create dummy answers, pretend to be a job interviewer, or act as anything other than a CV coach. If the user asks you to pretend, roleplay, or generate example answers, redirect warmly: "I am here to build your real CV. Let us talk about you. [repeat the current coaching question in ${langLabel}]."
 
-Current step: ${lang.stepLabels[step]}. Next: ${nextLabel}.
+CRITICAL - VAGUE ANSWERS: If user gives a short answer under 15 words, or uses vague traits like hardworking, dedicated, passionate, team player, push back firmly. Ask for a specific moment with context, action, and result.
+
+Current step: ${stepLabels[step]}. Next: ${nextLabel}.
 CV data so far: ${JSON.stringify(cvData)}.
 
 After EVERY response, final line only:
@@ -412,9 +301,69 @@ const isSimilarEdu=(a,b)=>{const n=s=>(s||"").toLowerCase().trim();return n(a.de
 const iSt={width:"100%",padding:"7px 9px",border:`1px solid ${C.border}`,borderRadius:5,fontFamily:"Georgia,serif",fontSize:12.5,color:C.dark,background:C.white,boxSizing:"border-box",marginTop:3};
 const lSt={fontSize:9,fontWeight:700,color:C.primary,textTransform:"uppercase",letterSpacing:1.2,display:"block",marginTop:10};
 
+const Stars=({n})=><span style={{color:"#f0a500",fontSize:13}}>{"★".repeat(n)}</span>;
+
+// ── LANGUAGE PICKER SCREEN ────────────────────────────────────────────────
+const LangPicker = ({onSelect}) => {
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f4f7f9,#e8eef3)",display:"flex",flexDirection:"column",position:"relative"}}>
+      <FloatingBg/>
+      <div style={{background:C.primary,padding:"14px 28px",position:"relative",zIndex:1}}>
+        <div style={{color:C.accent,fontSize:24,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:6,fontStyle:"italic"}}>clairo</div>
+        <div style={{color:C.light,fontSize:8,letterSpacing:3,marginTop:1}}>YOUR CAREER STORY, MADE CLEAR</div>
+      </div>
+      <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:24,position:"relative",zIndex:1}}>
+        <div style={{maxWidth:420,width:"100%",textAlign:"center"}}>
+          <div style={{fontSize:22,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,marginBottom:8}}>Welcome to Clairo</div>
+          <div style={{fontSize:14,color:C.muted,fontFamily:"Georgia,serif",lineHeight:1.7,marginBottom:28}}>In which language would you like to be coached today?</div>
+          <div style={{display:"flex",flexDirection:"column",gap:10,maxWidth:280,margin:"0 auto"}}>
+            {Object.values(LANGS).map(l=>(
+              <button key={l.code} onClick={()=>onSelect(l)}
+                style={{padding:"13px 20px",background:"rgba(255,255,255,0.9)",border:`1.5px solid ${C.border}`,borderRadius:8,fontSize:15,cursor:"pointer",fontFamily:"Georgia,serif",color:C.primary,display:"flex",alignItems:"center",gap:14,transition:"border-color 0.2s"}}>
+                <span style={{fontSize:22}}>{l.flag}</span><span style={{fontWeight:700}}>{l.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <style>{`* { box-sizing:border-box; } button:hover { border-color: #3a5162 !important; }`}</style>
+    </div>
+  );
+};
+
+// ── ACCESS GATE INNER ─────────────────────────────────────────────────────
+function AccessGateInner({lang,onSuccess}){
+  const [code,setCode]=useState("");
+  const [error,setError]=useState("");
+  const [checking,setChecking]=useState(false);
+  const placeholder = lang.accessPlaceholder || "e.g. CLR-3847";
+  const handleSubmit=()=>{
+    const trimmed=code.trim().toUpperCase();setChecking(true);
+    setTimeout(()=>{
+      if(VALID_CODES.includes(trimmed)){logCodeUse(trimmed);onSuccess(trimmed);}
+      else{setError(lang.accessError||"Invalid code.");setChecking(false);}
+    },700);
+  };
+  return(
+    <>
+      <input value={code} onChange={e=>{setCode(e.target.value.toUpperCase());setError("");}} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}
+        placeholder={placeholder}
+        style={{width:"100%",padding:"12px 14px",border:`1.5px solid ${error?"#e24b4a":C.border}`,borderRadius:8,fontSize:16,fontFamily:"Georgia,serif",color:C.dark,outline:"none",boxSizing:"border-box",letterSpacing:3,textAlign:"center",background:C.white}}/>
+      {error&&<div style={{fontSize:11,color:"#e24b4a",marginTop:8,fontFamily:"sans-serif",lineHeight:1.5}}>{error}</div>}
+      <button onClick={handleSubmit} disabled={!code.trim()||checking}
+        style={{width:"100%",marginTop:14,padding:"13px 0",background:C.primary,color:C.accent,border:"none",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700,opacity:!code.trim()||checking?0.5:1}}>
+        {checking?(lang.accessChecking||"CHECKING..."):(lang.accessBtn||"BEGIN MY CV SESSION")}
+      </button>
+      <div style={{marginTop:18,padding:"12px 14px",background:"rgba(213,221,227,0.5)",borderRadius:8,fontSize:11,color:C.muted,fontFamily:"sans-serif",lineHeight:1.6,textAlign:"center"}}>
+        {lang.accessNoCode||"No code yet? Get access at"}<br/><span style={{color:C.primary,fontWeight:700}}>mccalman.gumroad.com/l/clairo</span>
+      </div>
+    </>
+  );
+}
+
 // ── MAIN APP ──────────────────────────────────────────────────────────────
 export default function App() {
-  const [langCode, setLangCode] = useState(null); // null = language picker screen
+  const [selectedLang, setSelectedLang] = useState(null);
   const [accessCode, setAccessCode] = useState(()=>localStorage.getItem("clairo_access_code")||"");
   const [screen, setScreen] = useState("welcome");
   const [step, setStep] = useState("identity");
@@ -430,50 +379,25 @@ export default function App() {
   useEffect(()=>{stepRef.current=step;},[step]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages]);
 
-  const lang = langCode ? LANGS[langCode] : LANGS.en;
+  // Step 1: Language picker
+  if(!selectedLang) return <LangPicker onSelect={(l)=>setSelectedLang(l)} />;
 
-  // ── LANGUAGE PICKER SCREEN ──
-  if (!langCode) return (
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg, #f4f7f9 0%, #e8eef3 100%)",display:"flex",flexDirection:"column",position:"relative"}}>
-      <FloatingBg/>
-      <div style={{background:C.primary,padding:"14px 28px",position:"relative",zIndex:1}}>
-        <div style={{color:C.accent,fontSize:24,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:6,fontStyle:"italic"}}>clairo</div>
-        <div style={{color:C.light,fontSize:8,letterSpacing:3,marginTop:1}}>YOUR CAREER STORY, MADE CLEAR</div>
-      </div>
-      <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:24,position:"relative",zIndex:1}}>
-        <div style={{maxWidth:440,width:"100%",textAlign:"center"}}>
-          <div style={{fontSize:22,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,marginBottom:8}}>
-            Welcome to Clairo
-          </div>
-          <div style={{fontSize:14,color:C.muted,fontFamily:"Georgia,serif",lineHeight:1.7,marginBottom:32}}>
-            In which language would you like to be coached today?
-          </div>
-          <div style={{display:"flex",flexDirection:"column",gap:12,maxWidth:280,margin:"0 auto"}}>
-            {Object.values(LANGS).map(l=>(
-              <button key={l.code} onClick={()=>setLangCode(l.code)}
-                style={{padding:"14px 20px",background:"rgba(255,255,255,0.9)",border:`1.5px solid ${C.border}`,borderRadius:8,fontSize:15,cursor:"pointer",fontFamily:"Georgia,serif",color:C.primary,display:"flex",alignItems:"center",gap:14,transition:"all 0.2s"}}>
-                <span style={{fontSize:22}}>{l.flag}</span>
-                <span style={{fontWeight:700}}>{l.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-      <style>{`* { box-sizing:border-box; } button:hover { border-color: #3a5162 !important; background: white !important; }`}</style>
-    </div>
-  );
+  // Build effective lang object
+  const lang = LANGS[selectedLang.code] || LANGS.en;
+  const coachLang = selectedLang.label;
+  const getOpener = (step) => lang.openers?.[step] || LANGS.en.openers[step];
 
-  // ── ACCESS GATE ──
-  if (!accessCode) return (
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg, #f4f7f9 0%, #e8eef3 100%)",display:"flex",flexDirection:"column",position:"relative"}}>
+  // Step 2: Access gate
+  if(!accessCode) return (
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f4f7f9,#e8eef3)",display:"flex",flexDirection:"column",position:"relative"}}>
       <FloatingBg/>
       <div style={{background:C.primary,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",zIndex:1}}>
         <div>
           <div style={{color:C.accent,fontSize:22,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
           <div style={{color:C.light,fontSize:8,letterSpacing:3}}>YOUR CAREER STORY, MADE CLEAR</div>
         </div>
-        <button onClick={()=>setLangCode(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:10,cursor:"pointer",padding:"4px 10px",fontFamily:"sans-serif"}}>
-          {lang.flag} {lang.changeLang}
+        <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:10,cursor:"pointer",padding:"4px 10px",fontFamily:"sans-serif"}}>
+          {selectedLang.flag} {lang.changeLang||"Change language"}
         </button>
       </div>
       <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:24,position:"relative",zIndex:1}}>
@@ -481,8 +405,8 @@ export default function App() {
           <div style={{width:44,height:44,background:C.primary,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:18}}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.accent} strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-          <div style={{fontSize:20,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,marginBottom:8}}>{lang.accessTitle}</div>
-          <div style={{fontSize:13,color:C.muted,fontFamily:"Georgia,serif",lineHeight:1.7,marginBottom:22}}>{lang.accessDesc}</div>
+          <div style={{fontSize:20,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,marginBottom:8}}>{lang.accessTitle||"Enter Your Access Code"}</div>
+          <div style={{fontSize:13,color:C.muted,fontFamily:"Georgia,serif",lineHeight:1.7,marginBottom:22}}>{lang.accessDesc||"You received a unique code in your purchase confirmation."}</div>
           <AccessGateInner lang={lang} onSuccess={code=>{localStorage.setItem("clairo_access_code",code);setAccessCode(code);}}/>
         </div>
       </div>
@@ -490,89 +414,12 @@ export default function App() {
     </div>
   );
 
-  // ── WELCOME SCREEN ──
-  if (screen==="welcome") {
-    const applyExtract=(ex)=>{
-      if(!ex)return;
-      setCvData(prev=>{
-        const next={...prev};
-        if(ex.name)next.name=ex.name;if(ex.title)next.title=ex.title;if(ex.why_hire_me)next.why_hire_me=ex.why_hire_me;
-        if(ex.email)next.email=ex.email;if(ex.phone)next.phone=ex.phone;if(ex.location)next.location=ex.location;if(ex.website)next.website=ex.website;
-        if(ex.new_skill?.trim())next.skills=[...new Set([...prev.skills,ex.new_skill.trim()])];
-        return next;
-      });
-      if(ex.new_exp?.title)setCvData(prev=>{const di=prev.experience.findIndex(e=>isSimilarExp(e,ex.new_exp));if(di>=0){setPendingDuplicate({type:"exp",data:ex.new_exp,dupIdx:di});return prev;}return{...prev,experience:[...prev.experience,ex.new_exp]};});
-      if(ex.new_edu?.degree)setCvData(prev=>{const di=prev.education.findIndex(e=>isSimilarEdu(e,ex.new_edu));if(di>=0){setPendingDuplicate({type:"edu",data:ex.new_edu,dupIdx:di});return prev;}return{...prev,education:[...prev.education,ex.new_edu]};});
-    };
-
-    return(
-      <div style={{minHeight:"100vh",background:"linear-gradient(135deg, #f4f7f9 0%, #e8eef3 100%)",display:"flex",flexDirection:"column",position:"relative"}}>
-        <FloatingBg/>
-        <div style={{background:C.primary,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",zIndex:1}}>
-          <div>
-            <div style={{color:C.accent,fontSize:22,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
-            <div style={{color:C.light,fontSize:8,letterSpacing:3}}>YOUR CAREER STORY, MADE CLEAR</div>
-          </div>
-          <button onClick={()=>setLangCode(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:10,cursor:"pointer",padding:"4px 10px",fontFamily:"sans-serif"}}>
-            {lang.flag} {lang.changeLang}
-          </button>
-        </div>
-        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 16px",position:"relative",zIndex:1}}>
-          <div style={{maxWidth:560,width:"100%",textAlign:"center"}}>
-            <div style={{fontSize:30,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,lineHeight:1.3,marginBottom:14}}>{lang.tagline}</div>
-            <div style={{fontSize:15,color:C.dark,lineHeight:1.8,marginBottom:10,fontFamily:"Georgia,serif"}}>{lang.subtitle}</div>
-            <div style={{fontSize:13,color:C.muted,lineHeight:1.75,marginBottom:24,fontFamily:"Georgia,serif"}}>{lang.desc}</div>
-            <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:28,flexWrap:"wrap"}}>
-              {lang.features.map(f=><div key={f} style={{background:"rgba(255,255,255,0.7)",borderRadius:20,padding:"6px 14px",fontSize:10,color:C.primary,fontWeight:700,fontFamily:"sans-serif",border:`1px solid rgba(184,201,212,0.5)`}}>{f}</div>)}
-            </div>
-            <button onClick={()=>{setScreen("app");setMessages([{role:"assistant",content:lang.openers.identity}]);}}
-              style={{background:C.primary,color:C.accent,border:"none",padding:"14px 48px",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700,marginBottom:12}}>
-              {lang.start}
-            </button>
-            <div style={{marginTop:8,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
-              {lang.flag} {lang.label} &nbsp;|&nbsp; <span style={{cursor:"pointer",color:C.primary,textDecoration:"underline"}} onClick={()=>setLangCode(null)}>{lang.changeLang}</span>
-            </div>
-          </div>
-
-          {/* SAMPLE CV */}
-          <div style={{maxWidth:600,width:"100%",marginTop:48,textAlign:"center"}}>
-            <div style={{fontSize:16,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,marginBottom:12}}>{lang.sampleCVTitle}</div>
-            <button onClick={()=>openSampleCV(lang)}
-              style={{background:"transparent",border:`1.5px solid ${C.primary}`,borderRadius:6,color:C.primary,fontSize:10,cursor:"pointer",padding:"8px 20px",fontFamily:"sans-serif",letterSpacing:1,fontWeight:700}}>
-              {lang.viewSample} ↗
-            </button>
-            <div style={{fontSize:11,color:C.muted,fontFamily:"sans-serif",marginTop:6}}>Opens in a new tab</div>
-          </div>
-
-          {/* TESTIMONIALS */}
-          <div style={{maxWidth:700,width:"100%",marginTop:40}}>
-            <div style={{textAlign:"center",marginBottom:18}}>
-              <div style={{fontSize:16,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700}}>{lang.testimonialTitle}</div>
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(200px, 1fr))",gap:14}}>
-              {TESTIMONIALS.map((t,i)=>(
-                <div key={i} style={{background:"rgba(255,255,255,0.85)",borderRadius:10,padding:"16px 18px",border:`1px solid rgba(184,201,212,0.4)`}}>
-                  <Stars n={t.stars}/>
-                  <div style={{fontSize:12.5,fontFamily:"Georgia,serif",color:C.dark,lineHeight:1.7,margin:"8px 0 12px",fontStyle:"italic"}}>"{t.text}"</div>
-                  <div style={{fontSize:10,fontWeight:700,color:C.primary,fontFamily:"sans-serif"}}>{t.name}</div>
-                  <div style={{fontSize:9.5,color:C.muted,fontFamily:"sans-serif"}}>{t.role}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <style>{`* { box-sizing:border-box; }`}</style>
-      </div>
-    );
-  }
-
-  // ── COACHING APP ──
   const applyExtract=(ex)=>{
     if(!ex)return;
     setCvData(prev=>{
       const next={...prev};
-      if(ex.name)next.name=ex.name;if(ex.title)next.title=ex.title;if(ex.why_hire_me)next.why_hire_me=ex.why_hire_me;
-      if(ex.email)next.email=ex.email;if(ex.phone)next.phone=ex.phone;if(ex.location)next.location=ex.location;if(ex.website)next.website=ex.website;
+      if(ex.name)next.name=ex.name; if(ex.title)next.title=ex.title; if(ex.why_hire_me)next.why_hire_me=ex.why_hire_me;
+      if(ex.email)next.email=ex.email; if(ex.phone)next.phone=ex.phone; if(ex.location)next.location=ex.location; if(ex.website)next.website=ex.website;
       if(ex.new_skill?.trim())next.skills=[...new Set([...prev.skills,ex.new_skill.trim()])];
       return next;
     });
@@ -581,13 +428,13 @@ export default function App() {
   };
 
   const advanceStep=(current)=>{
-    const idx=STEPS.indexOf(current);if(idx>=STEPS.length-1)return;
-    const next=STEPS[idx+1];setStep(next);stepRef.current=next;
+    const idx=STEPS.indexOf(current); if(idx>=STEPS.length-1)return;
+    const next=STEPS[idx+1]; setStep(next); stepRef.current=next;
     if(next==="done")setTimeout(()=>setPanel("preview"),500);
   };
 
   const sendMessage=async()=>{
-    const text=input.trim();if(!text||loading)return;
+    const text=input.trim(); if(!text||loading)return;
     const userMsg={role:"user",content:text};
     setMessages(prev=>{const msgs=[...prev,userMsg];runAPI(msgs);return msgs;});
     setInput("");
@@ -599,18 +446,22 @@ export default function App() {
     try{
       const res=await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:buildSystemPrompt(lang,cur,cvData),messages:msgs.map(m=>({role:m.role,content:m.content}))}),
+        headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+          system:buildPrompt(coachLang,cur,lang.stepLabels||LANGS.en.stepLabels,cvData),
+          messages:msgs.map(m=>({role:m.role,content:m.content}))}),
       });
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"";
       applyExtract(extractJSON(raw));
-      const clean=cleanText(raw);const complete=hasComplete(raw);
+      const clean=cleanText(raw); const complete=hasComplete(raw);
       setMessages(prev=>[...prev,{role:"assistant",content:clean}]);
       if(complete){
         advanceStep(cur);
         const ni=STEPS.indexOf(cur)+1;
-        if(ni<STEPS.length&&STEPS[ni]!=="done")setTimeout(()=>setMessages(prev=>[...prev,{role:"assistant",content:lang.openers[STEPS[ni]]}]),500);
+        if(ni<STEPS.length&&STEPS[ni]!=="done"){
+          setTimeout(()=>setMessages(prev=>[...prev,{role:"assistant",content:getOpener(STEPS[ni])}]),500);
+        }
       }
     }catch{
       setMessages(prev=>[...prev,{role:"assistant",content:"Something went wrong. Please try again."}]);
@@ -619,24 +470,85 @@ export default function App() {
   };
 
   const manualSkip=()=>{
-    const idx=STEPS.indexOf(step);if(idx>=STEPS.length-1)return;
-    const next=STEPS[idx+1];setStep(next);stepRef.current=next;
+    const idx=STEPS.indexOf(step); if(idx>=STEPS.length-1)return;
+    const next=STEPS[idx+1]; setStep(next); stepRef.current=next;
     if(next==="done")setPanel("preview");
-    else setMessages(prev=>[...prev,{role:"assistant",content:lang.openers[next]}]);
+    else setMessages(prev=>[...prev,{role:"assistant",content:getOpener(next)}]);
   };
 
   const handleKey=(e)=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}};
 
   const printCV=()=>{
-    const area=document.getElementById("cv-print-area");if(!area)return;
+    const area=document.getElementById("cv-print-area"); if(!area)return;
     const w=window.open("","_blank");
     w.document.write(`<!DOCTYPE html><html><head><title>CV - ${cvData.name}</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{margin:0;background:white;}@media print{body{margin:0;}@page{margin:0;size:A4;}}</style></head><body>${area.outerHTML}</body></html>`);
-    w.document.close();setTimeout(()=>{w.focus();w.print();},400);
+    w.document.close(); setTimeout(()=>{w.focus();w.print();},400);
   };
 
   const stepIdx=STEPS.indexOf(step);
   const progress=Math.round(((stepIdx+1)/STEPS.length)*100);
+  const stepLabels=lang.stepLabels||LANGS.en.stepLabels;
+  const hints=lang.hints||LANGS.en.hints;
 
+  // WELCOME SCREEN
+  if(screen==="welcome") return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f4f7f9,#e8eef3)",display:"flex",flexDirection:"column",position:"relative"}}>
+      <FloatingBg/>
+      <div style={{background:C.primary,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",zIndex:1}}>
+        <div>
+          <div style={{color:C.accent,fontSize:22,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
+          <div style={{color:C.light,fontSize:8,letterSpacing:3}}>YOUR CAREER STORY, MADE CLEAR</div>
+        </div>
+        <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:10,cursor:"pointer",padding:"4px 10px",fontFamily:"sans-serif"}}>
+          {selectedLang.flag} {lang.changeLang||"Change language"}
+        </button>
+      </div>
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 16px",position:"relative",zIndex:1}}>
+        <div style={{maxWidth:560,width:"100%",textAlign:"center"}}>
+          <div style={{fontSize:30,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,lineHeight:1.3,marginBottom:14}}>{lang.tagline}</div>
+          <div style={{fontSize:15,color:C.dark,lineHeight:1.8,marginBottom:10,fontFamily:"Georgia,serif"}}>{lang.subtitle}</div>
+          <div style={{fontSize:13,color:C.muted,lineHeight:1.75,marginBottom:24,fontFamily:"Georgia,serif"}}>{lang.desc}</div>
+          <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:28,flexWrap:"wrap"}}>
+            {lang.features.map(f=><div key={f} style={{background:"rgba(255,255,255,0.7)",borderRadius:20,padding:"6px 14px",fontSize:10,color:C.primary,fontWeight:700,fontFamily:"sans-serif",border:`1px solid rgba(184,201,212,0.5)`}}>{f}</div>)}
+          </div>
+          <button onClick={()=>{setScreen("app");setMessages([{role:"assistant",content:getOpener("identity")}]);}}
+            style={{background:C.primary,color:C.accent,border:"none",padding:"14px 48px",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700}}>
+            {lang.start}
+          </button>
+          <div style={{marginTop:8,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
+            {selectedLang.flag} {selectedLang.label} &nbsp;|&nbsp;
+            <span style={{cursor:"pointer",color:C.primary,textDecoration:"underline"}} onClick={()=>setSelectedLang(null)}>{lang.changeLang||"Change language"}</span>
+          </div>
+        </div>
+        <div style={{maxWidth:600,width:"100%",marginTop:40,textAlign:"center"}}>
+          <div style={{fontSize:16,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700,marginBottom:12}}>{lang.sampleCVTitle}</div>
+          <button onClick={()=>openSampleCV(lang)}
+            style={{background:"transparent",border:`1.5px solid ${C.primary}`,borderRadius:6,color:C.primary,fontSize:10,cursor:"pointer",padding:"8px 20px",fontFamily:"sans-serif",letterSpacing:1,fontWeight:700}}>
+            {lang.viewSample} ↗
+          </button>
+          <div style={{fontSize:11,color:C.muted,fontFamily:"sans-serif",marginTop:5}}>Opens in a new tab</div>
+        </div>
+        <div style={{maxWidth:700,width:"100%",marginTop:36}}>
+          <div style={{textAlign:"center",marginBottom:16}}>
+            <div style={{fontSize:16,fontFamily:"Georgia,serif",color:C.primary,fontWeight:700}}>{lang.testimonialTitle}</div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(200px, 1fr))",gap:14}}>
+            {TESTIMONIALS.map((t,i)=>(
+              <div key={i} style={{background:"rgba(255,255,255,0.85)",borderRadius:10,padding:"16px 18px",border:`1px solid rgba(184,201,212,0.4)`}}>
+                <Stars n={t.stars}/>
+                <div style={{fontSize:12.5,fontFamily:"Georgia,serif",color:C.dark,lineHeight:1.7,margin:"8px 0 12px",fontStyle:"italic"}}>"{t.text}"</div>
+                <div style={{fontSize:10,fontWeight:700,color:C.primary,fontFamily:"sans-serif"}}>{t.name}</div>
+                <div style={{fontSize:9.5,color:C.muted,fontFamily:"sans-serif"}}>{t.role}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <style>{`* { box-sizing:border-box; }`}</style>
+    </div>
+  );
+
+  // COACHING APP
   return(
     <div style={{minHeight:"100vh",background:"#f4f7f9",display:"flex",flexDirection:"column"}}>
       {pendingDuplicate&&(
@@ -650,40 +562,40 @@ export default function App() {
       <div style={{background:C.primary,padding:"7px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <div style={{color:C.accent,fontSize:17,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
         <div style={{display:"flex",gap:6,alignItems:"center"}}>
-          <button onClick={()=>setLangCode(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:9,cursor:"pointer",padding:"3px 8px",fontFamily:"sans-serif"}}>{lang.flag}</button>
+          <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:9,cursor:"pointer",padding:"3px 8px",fontFamily:"sans-serif"}}>{selectedLang.flag}</button>
           <div style={{width:1,height:14,background:C.mid}}/>
-          {[["chat",lang.coaching],["data",lang.cvdata],["preview",lang.cvpreview]].map(([p,l])=>(
+          {[["chat",lang.coaching||"COACHING"],["data",lang.cvdata||"CV DATA"],["preview",lang.cvpreview||"CV PREVIEW"]].map(([p,l])=>(
             <button key={p} onClick={()=>setPanel(p)} style={{padding:"3px 10px",border:`1px solid ${panel===p?C.white:C.mid}`,borderRadius:4,background:panel===p?C.white:"transparent",color:panel===p?C.primary:C.light,fontSize:9,cursor:"pointer",fontFamily:"sans-serif",letterSpacing:1}}>{l}</button>
           ))}
         </div>
       </div>
 
       <div style={{display:"flex",flex:1}}>
-        <div style={{width:148,background:C.primary,flexShrink:0,padding:"12px 0"}}>
+        <div style={{width:150,background:C.primary,flexShrink:0,padding:"12px 0"}}>
           {STEPS.map((s,i)=>(
             <div key={s} style={{padding:"8px 11px",borderLeft:step===s?`3px solid ${C.light}`:"3px solid transparent",background:step===s?"rgba(255,255,255,0.1)":"transparent",color:i<=stepIdx?C.accent:"rgba(181,201,212,0.3)",fontSize:9,letterSpacing:0.8,fontFamily:"sans-serif",fontWeight:step===s?700:400,transition:"all 0.3s"}}>
               {i<stepIdx&&<span style={{marginRight:4,fontSize:8}}>✓</span>}
-              {lang.stepLabels[s].toUpperCase()}
+              {stepLabels[s].toUpperCase()}
             </div>
           ))}
           <div style={{margin:"12px 11px 0",height:3,background:"rgba(255,255,255,0.1)",borderRadius:2}}>
             <div style={{width:`${progress}%`,height:"100%",background:C.light,borderRadius:2,transition:"width 0.5s"}}/>
           </div>
-          <div style={{color:C.mid,fontSize:9,padding:"4px 11px",letterSpacing:1}}>{lang.done.replace("%%",progress)}</div>
+          <div style={{color:C.mid,fontSize:9,padding:"4px 11px",letterSpacing:1}}>{(lang.done||"%% DONE").replace("%%",progress)}</div>
         </div>
 
         <div style={{flex:1,padding:13,overflow:"hidden"}}>
           {panel==="chat"&&(
             <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 158px)"}}>
               <div style={{background:C.section,borderRadius:4,padding:"6px 11px",marginBottom:6,borderLeft:`3px solid ${C.primary}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1}}>STEP {stepIdx+1}/{STEPS.length}: {lang.stepLabels[step].toUpperCase()}</span>
-                <button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.light}`,borderRadius:3,color:C.muted,fontSize:9,cursor:"pointer",padding:"2px 8px",fontFamily:"sans-serif"}}>{lang.skip}</button>
+                <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1}}>STEP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}</span>
+                <button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.light}`,borderRadius:3,color:C.muted,fontSize:9,cursor:"pointer",padding:"2px 8px",fontFamily:"sans-serif"}}>{lang.skip||"SKIP"}</button>
               </div>
-              {lang.hints[step]?.length>0&&(
+              {hints[step]?.length>0&&(
                 <div style={{background:"rgba(58,81,98,0.05)",border:`1px dashed ${C.light}`,borderRadius:4,padding:"7px 11px",marginBottom:7,display:"flex",alignItems:"flex-start",gap:7}}>
                   <span style={{fontSize:12,flexShrink:0}}>💡</span>
                   <span style={{fontSize:11,color:C.primary,fontFamily:"Georgia,serif",lineHeight:1.55,fontStyle:"italic"}}>
-                    {lang.hints[step][Math.floor(Date.now()/30000)%lang.hints[step].length]}
+                    {hints[step][Math.floor(Date.now()/30000)%hints[step].length]}
                   </span>
                 </div>
               )}
@@ -703,10 +615,10 @@ export default function App() {
                 <div style={{display:"flex",gap:7,marginTop:7}}>
                   <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKey} rows={2}
                     style={{flex:1,padding:"9px 11px",border:`1px solid ${C.border}`,borderRadius:6,resize:"none",fontFamily:"Georgia,serif",fontSize:13,color:C.dark,outline:"none"}}/>
-                  <button onClick={sendMessage} disabled={loading||!input.trim()} style={{padding:"0 15px",background:C.primary,color:C.accent,border:"none",borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"sans-serif",letterSpacing:1,opacity:loading||!input.trim()?0.5:1}}>{lang.send}</button>
+                  <button onClick={sendMessage} disabled={loading||!input.trim()} style={{padding:"0 15px",background:C.primary,color:C.accent,border:"none",borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"sans-serif",letterSpacing:1,opacity:loading||!input.trim()?0.5:1}}>{lang.send||"SEND"}</button>
                 </div>
               ):(
-                <button onClick={()=>setPanel("preview")} style={{marginTop:10,width:"100%",padding:"11px 0",background:C.primary,color:C.accent,border:"none",borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>{lang.viewCV}</button>
+                <button onClick={()=>setPanel("preview")} style={{marginTop:10,width:"100%",padding:"11px 0",background:C.primary,color:C.accent,border:"none",borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>{lang.viewCV||"VIEW MY CV"}</button>
               )}
             </div>
           )}
@@ -731,7 +643,7 @@ export default function App() {
               <div style={{marginBottom:11}}>
                 <div style={{background:C.primary,color:C.accent,padding:"6px 13px",fontSize:9,letterSpacing:2,fontFamily:"sans-serif",borderRadius:"4px 4px 0 0"}}>SKILLS</div>
                 <div style={{background:C.white,border:`1px solid ${C.border}`,borderTop:"none",borderRadius:"0 0 4px 4px",padding:12}}>
-                  <input style={iSt} value={cvData.skills.join(", ")} onChange={e=>setCvData(d=>({...d,skills:e.target.value.split(",").map(s=>s.trim()).filter(Boolean)}))} placeholder="React, SQL, Excel..."/>
+                  <input style={iSt} value={cvData.skills.join(", ")} onChange={e=>setCvData(d=>({...d,skills:e.target.value.split(",").map(s=>s.trim()).filter(Boolean)}))} placeholder="Power BI, SQL, Excel..."/>
                   <div style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:7}}>
                     {cvData.skills.map((sk,i)=><span key={i} style={{background:C.section,color:C.primary,fontSize:10,padding:"3px 9px",borderRadius:10,fontFamily:"sans-serif"}}>{sk}</span>)}
                   </div>
@@ -771,8 +683,8 @@ export default function App() {
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
                 <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1,fontFamily:"sans-serif"}}>CV PREVIEW</span>
                 <div style={{display:"flex",gap:7}}>
-                  <button onClick={()=>setPanel("data")} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>{lang.editData}</button>
-                  <button onClick={printCV} style={{background:C.primary,border:"none",borderRadius:4,color:C.white,fontSize:9,cursor:"pointer",padding:"3px 12px",fontFamily:"sans-serif",letterSpacing:1}}>{lang.printSave}</button>
+                  <button onClick={()=>setPanel("data")} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>{lang.editData||"EDIT DATA"}</button>
+                  <button onClick={printCV} style={{background:C.primary,border:"none",borderRadius:4,color:C.white,fontSize:9,cursor:"pointer",padding:"3px 12px",fontFamily:"sans-serif",letterSpacing:1}}>{lang.printSave||"PRINT / SAVE PDF"}</button>
                 </div>
               </div>
               <div style={{transform:"scale(0.82)",transformOrigin:"top left",width:"122%"}}>
@@ -790,34 +702,5 @@ export default function App() {
         ::-webkit-scrollbar-thumb { background:${C.light}; border-radius:2px; }
       `}</style>
     </div>
-  );
-}
-
-// ── ACCESS GATE INNER ─────────────────────────────────────────────────────
-function AccessGateInner({lang,onSuccess}){
-  const [code,setCode]=useState("");
-  const [error,setError]=useState("");
-  const [checking,setChecking]=useState(false);
-  const handleSubmit=()=>{
-    const trimmed=code.trim().toUpperCase();setChecking(true);
-    setTimeout(()=>{
-      if(VALID_CODES.includes(trimmed)){logCodeUse(trimmed);onSuccess(trimmed);}
-      else{setError(lang.accessError);setChecking(false);}
-    },700);
-  };
-  return(
-    <>
-      <input value={code} onChange={e=>{setCode(e.target.value.toUpperCase());setError("");}} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}
-        placeholder={lang.accessPlaceholder}
-        style={{width:"100%",padding:"12px 14px",border:`1.5px solid ${error?"#e24b4a":C.border}`,borderRadius:8,fontSize:16,fontFamily:"Georgia,serif",color:C.dark,outline:"none",boxSizing:"border-box",letterSpacing:3,textAlign:"center",background:C.white}}/>
-      {error&&<div style={{fontSize:11,color:"#e24b4a",marginTop:8,fontFamily:"sans-serif",lineHeight:1.5}}>{error}</div>}
-      <button onClick={handleSubmit} disabled={!code.trim()||checking}
-        style={{width:"100%",marginTop:14,padding:"13px 0",background:C.primary,color:C.accent,border:"none",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700,opacity:!code.trim()||checking?0.5:1}}>
-        {checking?lang.accessChecking:lang.accessBtn}
-      </button>
-      <div style={{marginTop:18,padding:"12px 14px",background:"rgba(213,221,227,0.5)",borderRadius:8,fontSize:11,color:C.muted,fontFamily:"sans-serif",lineHeight:1.6,textAlign:"center"}}>
-        {lang.accessNoCode}<br/><span style={{color:C.primary,fontWeight:700}}>mccalman.gumroad.com/l/clairo</span>
-      </div>
-    </>
   );
 }
