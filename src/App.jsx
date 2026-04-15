@@ -365,9 +365,9 @@ function AccessGateInner({lang,onSuccess}){
 export default function App() {
   const [selectedLang, setSelectedLang] = useState(null);
   const [accessCode, setAccessCode] = useState(()=>localStorage.getItem("clairo_access_code")||"");
-  const [screen, setScreen] = useState("welcome");
-  const [step, setStep] = useState("identity");
-  const [messages, setMessages] = useState([]);
+  const [screen, setScreen] = useState(()=>localStorage.getItem("clairo_screen")||"welcome");
+  const [step, setStep] = useState(()=>localStorage.getItem("clairo_step")||"identity");
+  const [messages, setMessages] = useState(()=>{try{const s=localStorage.getItem("clairo_msgs");return s?JSON.parse(s):[]}catch{return []}});
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [panel, setPanel] = useState("chat");
@@ -379,6 +379,7 @@ export default function App() {
   useEffect(()=>{stepRef.current=step;},[step]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages]);
   useEffect(()=>{try{localStorage.setItem("clairo_cv",JSON.stringify(cvData));}catch{}},[cvData]);
+  useEffect(()=>{try{localStorage.setItem("clairo_msgs",JSON.stringify(messages));localStorage.setItem("clairo_step",step);localStorage.setItem("clairo_screen",screen);}catch{}},[messages,step,screen]);
 
   // Step 1: Language picker
   if(!selectedLang) return <LangPicker onSelect={(l)=>setSelectedLang(l)} />;
