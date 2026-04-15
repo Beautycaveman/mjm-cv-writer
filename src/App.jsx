@@ -513,7 +513,7 @@ export default function App() {
           <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:28,flexWrap:"wrap"}}>
             {lang.features.map(f=><div key={f} style={{background:"rgba(255,255,255,0.7)",borderRadius:20,padding:"6px 14px",fontSize:10,color:C.primary,fontWeight:700,fontFamily:"sans-serif",border:`1px solid rgba(184,201,212,0.5)`}}>{f}</div>)}
           </div>
-          <button onClick={()=>{setScreen("app");setMessages([{role:"assistant",content:getOpener("identity")}]);}}
+          <button onClick={()=>{setScreen("app");if(messages.length===0)setMessages([{role:"assistant",content:getOpener("identity")}]);}}
             style={{background:C.primary,color:C.accent,border:"none",padding:"14px 48px",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700}}>
             {lang.start}
           </button>
