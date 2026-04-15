@@ -24,7 +24,7 @@ const LANGS = {
     features:["7 guided steps","AI coach","Auto-fills data","Duplicate protection","Print-ready CV"],
     start:"START MY CV", accessTitle:"Enter Your Access Code",
     accessDesc:"You received a unique code in your purchase confirmation. Enter it below to begin.",
-    accessPlaceholder:"e.g. CLR-XXXX", accessBtn:"BEGIN MY CV SESSION",
+    accessPlaceholder:"e.g. CLR-3847", accessBtn:"BEGIN MY CV SESSION",
     accessChecking:"CHECKING...",
     accessError:"This code is not valid. Please check your purchase confirmation and try again.",
     accessNoCode:"No code yet? Get access at",
@@ -64,7 +64,7 @@ const LANGS = {
     features:["7 begeleide stappen","AI coach","Automatisch invullen","Preventie duplicaten","Printklaar cv"],
     start:"MAAK MIJN CV", accessTitle:"Voer je toegangscode in",
     accessDesc:"Je ontving een unieke code in je aankoopbevestiging. Voer deze hieronder in.",
-    accessPlaceholder:"bijv. CLR-XXXX", accessBtn:"BEGIN MIJN CV SESSIE",
+    accessPlaceholder:"bijv. CLR-3847", accessBtn:"BEGIN MIJN CV SESSIE",
     accessChecking:"CONTROLEREN...",
     accessError:"Deze code is niet geldig. Controleer je aankoopbevestiging en probeer opnieuw.",
     accessNoCode:"Nog geen code? Koop toegang op",
@@ -104,7 +104,7 @@ const LANGS = {
     features:["7 pasos guiados","Coach con IA","Llenado automático","Prevención duplicados","CV listo para imprimir"],
     start:"CREAR MI CV", accessTitle:"Ingresa tu código de acceso",
     accessDesc:"Recibiste un código único en tu confirmación de compra. Ingrésalo abajo para comenzar.",
-    accessPlaceholder:"ej. CLR-XXXX", accessBtn:"COMENZAR MI SESIÓN",
+    accessPlaceholder:"ej. CLR-3847", accessBtn:"COMENZAR MI SESIÓN",
     accessChecking:"VERIFICANDO...",
     accessError:"Este código no es válido. Verifica tu confirmación de compra e intenta de nuevo.",
     accessNoCode:"¿Sin código? Obtén acceso en",
@@ -336,7 +336,7 @@ function AccessGateInner({lang,onSuccess}){
   const [code,setCode]=useState("");
   const [error,setError]=useState("");
   const [checking,setChecking]=useState(false);
-  const placeholder = lang.accessPlaceholder || "e.g. CLR-XXXX";
+  const placeholder = lang.accessPlaceholder || "e.g. CLR-3847";
   const handleSubmit=()=>{
     const trimmed=code.trim().toUpperCase();setChecking(true);
     setTimeout(()=>{
@@ -362,22 +362,53 @@ function AccessGateInner({lang,onSuccess}){
 }
 
 // ── MAIN APP ──────────────────────────────────────────────────────────────
+const STORAGE_KEY = "clairo_session";
+
+const loadSession = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return null;
+};
+
+const saveSession = (data) => {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+};
+
+const clearSession = () => {
+  try { localStorage.removeItem(STORAGE_KEY); } catch {}
+};
+
 export default function App() {
-  const [selectedLang, setSelectedLang] = useState(null);
+  const saved = loadSession();
+  const [selectedLang, setSelectedLang] = useState(()=>{
+    if(saved?.langCode && LANGS[saved.langCode]) return LANGS[saved.langCode];
+    return null;
+  });
   const [accessCode, setAccessCode] = useState(()=>localStorage.getItem("clairo_access_code")||"");
-  const [screen, setScreen] = useState("welcome");
-  const [step, setStep] = useState("identity");
-  const [messages, setMessages] = useState([]);
+  const [screen, setScreen] = useState(()=>saved?.screen||"welcome");
+  const [step, setStep] = useState(()=>saved?.step||"identity");
+  const [messages, setMessages] = useState(()=>saved?.messages||[]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [panel, setPanel] = useState("chat");
+  const [panel, setPanel] = useState(()=>saved?.panel||"chat");
   const [pendingDuplicate, setPendingDuplicate] = useState(null);
-  const [cvData, setCvData] = useState({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});
+  const [cvData, setCvData] = useState(()=>saved?.cvData||{name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});
   const messagesEnd = useRef(null);
-  const stepRef = useRef("identity");
+  const stepRef = useRef(step);
 
   useEffect(()=>{stepRef.current=step;},[step]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages]);
+
+  // Auto-save session whenever anything important changes
+  useEffect(()=>{
+    if(!selectedLang||!accessCode) return;
+    saveSession({
+      langCode: selectedLang.code,
+      screen, step, messages, panel, cvData,
+    });
+  },[selectedLang, screen, step, messages, panel, cvData, accessCode]);
 
   // Step 1: Language picker
   if(!selectedLang) return <LangPicker onSelect={(l)=>setSelectedLang(l)} />;
@@ -444,9 +475,9 @@ export default function App() {
     setLoading(true);
     const cur=stepRef.current;
     try{
-      const res=await fetch("/api/chat",{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
           system:buildPrompt(coachLang,cur,lang.stepLabels||LANGS.en.stepLabels,cvData),
           messages:msgs.map(m=>({role:m.role,content:m.content}))}),
@@ -515,6 +546,14 @@ export default function App() {
             style={{background:C.primary,color:C.accent,border:"none",padding:"14px 48px",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700}}>
             {lang.start}
           </button>
+          {saved?.cvData?.name && (
+            <div style={{marginTop:12,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
+              Session saved for <strong style={{color:C.primary}}>{saved.cvData.name||"you"}</strong>.{" "}
+              <span style={{cursor:"pointer",textDecoration:"underline",color:C.primary}} onClick={()=>{clearSession();setScreen("welcome");setStep("identity");setMessages([]);setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});}}>
+                Start fresh
+              </span>
+            </div>
+          )}
           <div style={{marginTop:8,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
             {selectedLang.flag} {selectedLang.label} &nbsp;|&nbsp;
             <span style={{cursor:"pointer",color:C.primary,textDecoration:"underline"}} onClick={()=>setSelectedLang(null)}>{lang.changeLang||"Change language"}</span>
