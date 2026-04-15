@@ -24,7 +24,7 @@ const LANGS = {
     features:["7 guided steps","AI coach","Auto-fills data","Duplicate protection","Print-ready CV"],
     start:"START MY CV", accessTitle:"Enter Your Access Code",
     accessDesc:"You received a unique code in your purchase confirmation. Enter it below to begin.",
-    accessPlaceholder:"e.g. CLR-3847", accessBtn:"BEGIN MY CV SESSION",
+    accessPlaceholder:"e.g. CLR-XXXX", accessBtn:"BEGIN MY CV SESSION",
     accessChecking:"CHECKING...",
     accessError:"This code is not valid. Please check your purchase confirmation and try again.",
     accessNoCode:"No code yet? Get access at",
@@ -64,7 +64,7 @@ const LANGS = {
     features:["7 begeleide stappen","AI coach","Automatisch invullen","Preventie duplicaten","Printklaar cv"],
     start:"MAAK MIJN CV", accessTitle:"Voer je toegangscode in",
     accessDesc:"Je ontving een unieke code in je aankoopbevestiging. Voer deze hieronder in.",
-    accessPlaceholder:"bijv. CLR-3847", accessBtn:"BEGIN MIJN CV SESSIE",
+    accessPlaceholder:"bijv. CLR-XXXX", accessBtn:"BEGIN MIJN CV SESSIE",
     accessChecking:"CONTROLEREN...",
     accessError:"Deze code is niet geldig. Controleer je aankoopbevestiging en probeer opnieuw.",
     accessNoCode:"Nog geen code? Koop toegang op",
@@ -104,7 +104,7 @@ const LANGS = {
     features:["7 pasos guiados","Coach con IA","Llenado automático","Prevención duplicados","CV listo para imprimir"],
     start:"CREAR MI CV", accessTitle:"Ingresa tu código de acceso",
     accessDesc:"Recibiste un código único en tu confirmación de compra. Ingrésalo abajo para comenzar.",
-    accessPlaceholder:"ej. CLR-3847", accessBtn:"COMENZAR MI SESIÓN",
+    accessPlaceholder:"ej. CLR-XXXX", accessBtn:"COMENZAR MI SESIÓN",
     accessChecking:"VERIFICANDO...",
     accessError:"Este código no es válido. Verifica tu confirmación de compra e intenta de nuevo.",
     accessNoCode:"¿Sin código? Obtén acceso en",
@@ -336,7 +336,7 @@ function AccessGateInner({lang,onSuccess}){
   const [code,setCode]=useState("");
   const [error,setError]=useState("");
   const [checking,setChecking]=useState(false);
-  const placeholder = lang.accessPlaceholder || "e.g. CLR-3847";
+  const placeholder = lang.accessPlaceholder || "e.g. CLR-XXXX";
   const handleSubmit=()=>{
     const trimmed=code.trim().toUpperCase();setChecking(true);
     setTimeout(()=>{
@@ -726,9 +726,12 @@ export default function App() {
           {panel==="preview"&&(
             <div style={{overflowY:"auto",maxHeight:"calc(100vh - 145px)"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-                <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1,fontFamily:"sans-serif"}}>CV PREVIEW</span>
+                <div>
+                  <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1,fontFamily:"sans-serif"}}>CV PREVIEW</span>
+                  <div style={{fontSize:10,color:C.muted,fontFamily:"Georgia,serif",marginTop:2,fontStyle:"italic"}}>Know someone who needs a CV? Share Clairo with them.</div>
+                </div>
                 <div style={{display:"flex",gap:7}}>
-                  <button onClick={()=>{navigator.clipboard.writeText("getclairo.vercel.app").then(()=>alert("Link copied! Share getclairo.vercel.app with anyone who needs a CV."));}} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>SHARE APP</button>
+                  <button onClick={()=>{navigator.clipboard.writeText("getclairo.vercel.app").then(()=>alert("Link copied! Share getclairo.vercel.app with anyone who needs a CV."));}} style={{background:C.section,border:`1px solid ${C.light}`,borderRadius:4,color:C.primary,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif",fontWeight:700}}>SHARE APP</button>
                   <button onClick={()=>setPanel("data")} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>{lang.editData||"EDIT DATA"}</button>
                   <button onClick={printCV} style={{background:C.primary,border:"none",borderRadius:4,color:C.white,fontSize:9,cursor:"pointer",padding:"3px 12px",fontFamily:"sans-serif",letterSpacing:1}}>{lang.printSave||"PRINT / SAVE PDF"}</button>
                 </div>
