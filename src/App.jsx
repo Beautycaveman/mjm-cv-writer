@@ -546,10 +546,10 @@ export default function App() {
             style={{background:C.primary,color:C.accent,border:"none",padding:"14px 48px",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700}}>
             {lang.start}
           </button>
-          {step==="done" && (
+          {(step==="done" || localStorage.getItem("clairo_step")==="done") && (
             <div style={{marginTop:12,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
-              Session complete.{" "}
-              <span style={{cursor:"pointer",textDecoration:"underline",color:C.primary}} onClick={()=>{clearSession();setScreen("welcome");setStep("identity");setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});}}>
+              Previous session complete.{" "}
+              <span style={{cursor:"pointer",textDecoration:"underline",color:C.primary}} onClick={()=>{clearSession();localStorage.removeItem("clairo_step");localStorage.removeItem("clairo_msgs");localStorage.removeItem("clairo_cv");localStorage.removeItem("clairo_screen");setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});}}>
                 Start a new CV
               </span>
             </div>
