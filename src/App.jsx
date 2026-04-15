@@ -372,12 +372,13 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [panel, setPanel] = useState("chat");
   const [pendingDuplicate, setPendingDuplicate] = useState(null);
-  const [cvData, setCvData] = useState({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});
+  const [cvData, setCvData] = useState(()=>{try{const s=localStorage.getItem("clairo_cv");return s?JSON.parse(s):{name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]};}catch{return {name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]}}});
   const messagesEnd = useRef(null);
   const stepRef = useRef("identity");
 
   useEffect(()=>{stepRef.current=step;},[step]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages]);
+  useEffect(()=>{try{localStorage.setItem("clairo_cv",JSON.stringify(cvData));}catch{}},[cvData]);
 
   // Step 1: Language picker
   if(!selectedLang) return <LangPicker onSelect={(l)=>setSelectedLang(l)} />;
