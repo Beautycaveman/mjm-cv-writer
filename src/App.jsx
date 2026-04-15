@@ -355,7 +355,7 @@ function AccessGateInner({lang,onSuccess}){
         {checking?(lang.accessChecking||"CHECKING..."):(lang.accessBtn||"BEGIN MY CV SESSION")}
       </button>
       <div style={{marginTop:18,padding:"12px 14px",background:"rgba(213,221,227,0.5)",borderRadius:8,fontSize:11,color:C.muted,fontFamily:"sans-serif",lineHeight:1.6,textAlign:"center"}}>
-        {lang.accessNoCode||"No code yet? Get access at"}<br/><span style={{color:C.primary,fontWeight:700}}>getclairo.gumroad.com/l/clairo</span>
+        {lang.accessNoCode||"No code yet? Get access at"}<br/><a href="https://getclairo.gumroad.com/l/clairo" target="_blank" rel="noreferrer" style={{color:C.primary,fontWeight:700,textDecoration:"none"}}>getclairo.gumroad.com/l/clairo</a>
       </div>
     </>
   );
@@ -599,7 +599,10 @@ export default function App() {
       )}
       <DiamondBanner height={48}/>
       <div style={{background:C.primary,padding:"7px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div style={{color:C.accent,fontSize:17,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <div style={{color:C.accent,fontSize:17,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
+          <button onClick={()=>setScreen("welcome")} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:9,cursor:"pointer",padding:"3px 8px",fontFamily:"sans-serif",letterSpacing:1}}>HOME</button>
+        </div>
         <div style={{display:"flex",gap:6,alignItems:"center"}}>
           <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:9,cursor:"pointer",padding:"3px 8px",fontFamily:"sans-serif"}}>{selectedLang.flag}</button>
           <div style={{width:1,height:14,background:C.mid}}/>
@@ -725,6 +728,7 @@ export default function App() {
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
                 <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1,fontFamily:"sans-serif"}}>CV PREVIEW</span>
                 <div style={{display:"flex",gap:7}}>
+                  <button onClick={()=>{navigator.clipboard.writeText("getclairo.vercel.app").then(()=>alert("Link copied! Share getclairo.vercel.app with anyone who needs a CV."));}} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>SHARE APP</button>
                   <button onClick={()=>setPanel("data")} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>{lang.editData||"EDIT DATA"}</button>
                   <button onClick={printCV} style={{background:C.primary,border:"none",borderRadius:4,color:C.white,fontSize:9,cursor:"pointer",padding:"3px 12px",fontFamily:"sans-serif",letterSpacing:1}}>{lang.printSave||"PRINT / SAVE PDF"}</button>
                 </div>
