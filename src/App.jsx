@@ -24,7 +24,7 @@ const LANGS = {
     features:["7 guided steps","AI coach","Auto-fills data","Duplicate protection","Print-ready CV"],
     start:"START MY CV", accessTitle:"Enter Your Access Code",
     accessDesc:"You received a unique code in your purchase confirmation. Enter it below to begin.",
-    accessPlaceholder:"e.g. CLR-XXXX", accessBtn:"BEGIN MY CV SESSION",
+    accessPlaceholder:"e.g. CLR-3847", accessBtn:"BEGIN MY CV SESSION",
     accessChecking:"CHECKING...",
     accessError:"This code is not valid. Please check your purchase confirmation and try again.",
     accessNoCode:"No code yet? Get access at",
@@ -64,7 +64,7 @@ const LANGS = {
     features:["7 begeleide stappen","AI coach","Automatisch invullen","Preventie duplicaten","Printklaar cv"],
     start:"MAAK MIJN CV", accessTitle:"Voer je toegangscode in",
     accessDesc:"Je ontving een unieke code in je aankoopbevestiging. Voer deze hieronder in.",
-    accessPlaceholder:"bijv. CLR-XXXX", accessBtn:"BEGIN MIJN CV SESSIE",
+    accessPlaceholder:"bijv. CLR-3847", accessBtn:"BEGIN MIJN CV SESSIE",
     accessChecking:"CONTROLEREN...",
     accessError:"Deze code is niet geldig. Controleer je aankoopbevestiging en probeer opnieuw.",
     accessNoCode:"Nog geen code? Koop toegang op",
@@ -104,7 +104,7 @@ const LANGS = {
     features:["7 pasos guiados","Coach con IA","Llenado automático","Prevención duplicados","CV listo para imprimir"],
     start:"CREAR MI CV", accessTitle:"Ingresa tu código de acceso",
     accessDesc:"Recibiste un código único en tu confirmación de compra. Ingrésalo abajo para comenzar.",
-    accessPlaceholder:"ej. CLR-XXXX", accessBtn:"COMENZAR MI SESIÓN",
+    accessPlaceholder:"ej. CLR-3847", accessBtn:"COMENZAR MI SESIÓN",
     accessChecking:"VERIFICANDO...",
     accessError:"Este código no es válido. Verifica tu confirmación de compra e intenta de nuevo.",
     accessNoCode:"¿Sin código? Obtén acceso en",
@@ -336,7 +336,7 @@ function AccessGateInner({lang,onSuccess}){
   const [code,setCode]=useState("");
   const [error,setError]=useState("");
   const [checking,setChecking]=useState(false);
-  const placeholder = lang.accessPlaceholder || "e.g. CLR-XXXX";
+  const placeholder = lang.accessPlaceholder || "e.g. CLR-3847";
   const handleSubmit=()=>{
     const trimmed=code.trim().toUpperCase();setChecking(true);
     setTimeout(()=>{
@@ -362,24 +362,53 @@ function AccessGateInner({lang,onSuccess}){
 }
 
 // ── MAIN APP ──────────────────────────────────────────────────────────────
+const STORAGE_KEY = "clairo_session";
+
+const loadSession = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return null;
+};
+
+const saveSession = (data) => {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+};
+
+const clearSession = () => {
+  try { localStorage.removeItem(STORAGE_KEY); } catch {}
+};
+
 export default function App() {
-  const [selectedLang, setSelectedLang] = useState(null);
+  const saved = loadSession();
+  const [selectedLang, setSelectedLang] = useState(()=>{
+    if(saved?.langCode && LANGS[saved.langCode]) return LANGS[saved.langCode];
+    return null;
+  });
   const [accessCode, setAccessCode] = useState(()=>localStorage.getItem("clairo_access_code")||"");
-  const [screen, setScreen] = useState(()=>localStorage.getItem("clairo_screen")||"welcome");
-  const [step, setStep] = useState(()=>localStorage.getItem("clairo_step")||"identity");
-  const [messages, setMessages] = useState(()=>{try{const s=localStorage.getItem("clairo_msgs");return s?JSON.parse(s):[]}catch{return []}});
+  const [screen, setScreen] = useState(()=>saved?.screen||"welcome");
+  const [step, setStep] = useState(()=>saved?.step||"identity");
+  const [messages, setMessages] = useState(()=>saved?.messages||[]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [panel, setPanel] = useState("chat");
+  const [panel, setPanel] = useState(()=>saved?.panel||"chat");
   const [pendingDuplicate, setPendingDuplicate] = useState(null);
-  const [cvData, setCvData] = useState(()=>{try{const s=localStorage.getItem("clairo_cv");return s?JSON.parse(s):{name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]};}catch{return {name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]}}});
+  const [cvData, setCvData] = useState(()=>saved?.cvData||{name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});
   const messagesEnd = useRef(null);
-  const stepRef = useRef("identity");
+  const stepRef = useRef(step);
 
   useEffect(()=>{stepRef.current=step;},[step]);
   useEffect(()=>{messagesEnd.current?.scrollIntoView({behavior:"smooth"});},[messages]);
-  useEffect(()=>{try{localStorage.setItem("clairo_cv",JSON.stringify(cvData));}catch{}},[cvData]);
-  useEffect(()=>{try{localStorage.setItem("clairo_msgs",JSON.stringify(messages));localStorage.setItem("clairo_step",step);localStorage.setItem("clairo_screen",screen);}catch{}},[messages,step,screen]);
+
+  // Auto-save session whenever anything important changes
+  useEffect(()=>{
+    if(!selectedLang||!accessCode) return;
+    saveSession({
+      langCode: selectedLang.code,
+      screen, step, messages, panel, cvData,
+    });
+  },[selectedLang, screen, step, messages, panel, cvData, accessCode]);
 
   // Step 1: Language picker
   if(!selectedLang) return <LangPicker onSelect={(l)=>setSelectedLang(l)} />;
@@ -446,9 +475,9 @@ export default function App() {
     setLoading(true);
     const cur=stepRef.current;
     try{
-      const res=await fetch("/api/chat",{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
           system:buildPrompt(coachLang,cur,lang.stepLabels||LANGS.en.stepLabels,cvData),
           messages:msgs.map(m=>({role:m.role,content:m.content}))}),
@@ -517,6 +546,14 @@ export default function App() {
             style={{background:C.primary,color:C.accent,border:"none",padding:"14px 48px",borderRadius:8,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif",fontWeight:700}}>
             {lang.start}
           </button>
+          {step==="done" && (
+            <div style={{marginTop:12,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
+              Session complete.{" "}
+              <span style={{cursor:"pointer",textDecoration:"underline",color:C.primary}} onClick={()=>{clearSession();setScreen("welcome");setStep("identity");setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});}}>
+                Start a new CV
+              </span>
+            </div>
+          )}
           <div style={{marginTop:8,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
             {selectedLang.flag} {selectedLang.label} &nbsp;|&nbsp;
             <span style={{cursor:"pointer",color:C.primary,textDecoration:"underline"}} onClick={()=>setSelectedLang(null)}>{lang.changeLang||"Change language"}</span>
@@ -575,7 +612,7 @@ export default function App() {
       <div style={{display:"flex",flex:1}}>
         <div style={{width:150,background:C.primary,flexShrink:0,padding:"12px 0"}}>
           {STEPS.map((s,i)=>(
-            <div key={s} style={{padding:"8px 11px",borderLeft:step===s?`3px solid ${C.light}`:"3px solid transparent",background:step===s?"rgba(255,255,255,0.1)":"transparent",color:i<=stepIdx?C.accent:"rgba(181,201,212,0.3)",fontSize:9,letterSpacing:0.8,fontFamily:"sans-serif",fontWeight:step===s?700:400,transition:"all 0.3s"}}>
+            <div key={s} onClick={()=>{if(i<=stepIdx){setStep(s);stepRef.current=s;setPanel("chat");}}} style={{padding:"8px 11px",cursor:i<=stepIdx?"pointer":"default",borderLeft:step===s?`3px solid ${C.light}`:"3px solid transparent",background:step===s?"rgba(255,255,255,0.1)":"transparent",color:i<=stepIdx?C.accent:"rgba(181,201,212,0.3)",fontSize:9,letterSpacing:0.8,fontFamily:"sans-serif",fontWeight:step===s?700:400,transition:"all 0.3s"}}>
               {i<stepIdx&&<span style={{marginRight:4,fontSize:8}}>✓</span>}
               {stepLabels[s].toUpperCase()}
             </div>
