@@ -50,7 +50,7 @@ const LANGS = {
       education:"Let's talk about your education. Start with the highest level you completed. What did you study, where, and when?",
       skills:"Now let's surface your skills. Based on everything you have shared, what do you think you do better than most people around you?",
       whyhire:"Here is the big question. If you had 30 seconds to tell someone why they should hire you over anyone else, what would you say? Be bold. This becomes your Profile Statement, the first thing a hiring manager reads.",
-      contact:"Almost there. What is your full name and the job title you are targeting?",
+      contact:"Almost there. What is your full name, email address, phone number, and location?",
       done:"You have done it. Your CV is ready. Switch to CV PREVIEW to see your design, or edit anything in CV DATA.",
     },
     cvLabels:{ profile:"Profile", skills:"Skills", education:"Education", experience:"Experience" },
@@ -90,7 +90,7 @@ const LANGS = {
       education:"Laten we het hebben over jouw opleiding. Begin bij het hoogste niveau dat je hebt afgerond. Wat studeerde je, waar en wanneer?",
       skills:"Laten we nu jouw vaardigheden naar boven halen. Op basis van alles wat je hebt gedeeld, wat denk je dat jij beter doet dan de meeste mensen om je heen?",
       whyhire:"Dit is de grote vraag. Als je 30 seconden had om iemand te vertellen waarom ze jou zouden moeten aannemen boven iedereen, wat zou je zeggen? Wees gedurfd.",
-      contact:"Bijna klaar. Wat is jouw volledige naam en de functietitel die je nastreeft?",
+      contact:"Bijna klaar. Wat is jouw volledige naam, e-mailadres, telefoonnummer en locatie?",
       done:"Je hebt het gedaan. Je cv is klaar. Schakel over naar CV VOORBEELD om je ontwerp te zien.",
     },
     cvLabels:{ profile:"Profiel", skills:"Vaardigheden", education:"Opleiding", experience:"Ervaring" },
@@ -130,7 +130,7 @@ const LANGS = {
       education:"Hablemos de tu educación. Empieza por el nivel más alto que completaste. ¿Qué estudiaste, dónde y cuándo?",
       skills:"Ahora vamos a descubrir tus habilidades. Basándote en todo lo que has compartido, ¿qué crees que haces mejor que la mayoría?",
       whyhire:"Esta es la gran pregunta. Si tuvieras 30 segundos para decirle a alguien por qué debería contratarte, ¿qué dirías? Sé audaz.",
-      contact:"Casi terminamos. ¿Cuál es tu nombre completo y el título del puesto al que aspiras?",
+      contact:"Casi terminamos. ¿Cuál es tu nombre completo, correo electrónico, teléfono y ubicación?",
       done:"Lo lograste. Tu CV está listo. Cambia a VISTA PREVIA para ver tu diseño.",
     },
     cvLabels:{ profile:"Perfil", skills:"Habilidades", education:"Educación", experience:"Experiencia" },
@@ -140,21 +140,52 @@ const LANGS = {
 
 const STEPS = ["identity","experience","education","skills","whyhire","contact","done"];
 
-const DUMMY_CV = {
+const DUMMY_CV_EN = {
   name:"JORDAN A. REED", title:"Senior Product Manager",
   why_hire_me:"I do not just manage products, I find the gap between what users are asking for and what they actually need. At every company I have worked at, I have shipped features that changed retention numbers, reduced churn, and opened new revenue lines. I am not a coordinator. I am the person who sees three steps ahead and gets the team there without losing anyone along the way.",
   email:"jordan.reed@email.com", phone:"+1 (312) 555 0194", location:"Chicago, IL, United States", website:"linkedin.com/in/jordanreed",
   skills:["Product Strategy","Agile / Scrum","User Research","Roadmap Planning","Stakeholder Management","SQL & Data Analysis","Figma","A/B Testing"],
   experience:[
-    {title:"Senior Product Manager",company:"Foresight Health Technologies",years:"2021 - Present",description:"Led the redesign of the core patient onboarding flow which reduced drop-off by 34% and increased activation by 28% within 90 days of launch. Built and managed a cross-functional team of 11. Presented quarterly roadmap to a board including two external investors, receiving full approval for a $2.1M feature expansion budget."},
-    {title:"Product Manager",company:"Loopline Software",years:"2018 - 2021",description:"Owned the B2B analytics dashboard from concept to launch. It became the top-cited feature in 67% of enterprise renewal conversations. Ran 40+ user interviews across three market segments. Reduced average sprint cycle time by 22% by introducing a structured discovery process."},
-    {title:"Associate Product Analyst",company:"RetailEdge Inc.",years:"2016 - 2018",description:"Analysed customer data across 14 retail clients to identify friction points in checkout flows. Produced a findings report that led to a redesign adopted by 9 of the 14 clients, with an average cart abandonment reduction of 18%. Promoted 8 months ahead of schedule."},
+    {title:"Senior Product Manager",company:"Foresight Health Technologies",years:"2021 - Present",description:"Led the redesign of the core patient onboarding flow which reduced drop-off by 34% and increased activation by 28% within 90 days of launch. Built and managed a cross-functional team of 11."},
+    {title:"Product Manager",company:"Loopline Software",years:"2018 - 2021",description:"Owned the B2B analytics dashboard from concept to launch. It became the top-cited feature in 67% of enterprise renewal conversations. Ran 40+ user interviews across three market segments."},
   ],
   education:[
-    {degree:"Bachelor of Science in Business Administration",institution:"University of Illinois Urbana-Champaign",years:"2012 - 2016",description:"Concentration in Information Systems. Graduated with honours. Senior capstone on digital product adoption in healthcare received departmental recognition."},
-    {degree:"Certified Scrum Product Owner (CSPO)",institution:"Scrum Alliance",years:"2019",description:""},
-    {degree:"Google Data Analytics Certificate",institution:"Google / Coursera",years:"2020",description:""},
+    {degree:"Bachelor of Science in Business Administration",institution:"University of Illinois",years:"2012 - 2016",description:"Concentration in Information Systems. Graduated with honours."},
   ],
+};
+
+const DUMMY_CV_NL = {
+  name:"SARAH VAN DEN BERG", title:"Projectmanager",
+  why_hire_me:"Ik zie niet alleen wat er nu speelt, maar ook wat er aan zit te komen. Bij elk project dat ik heb geleid, heb ik processen verbeterd die direct effect hadden op het resultaat. Ik ben geen uitvoerder. Ik ben degene die drie stappen vooruit denkt en het team daar naartoe brengt.",
+  email:"sarah.vandenberg@email.nl", phone:"+31 6 12 34 56 78", location:"Amsterdam, Nederland", website:"linkedin.com/in/sarahvandenberg",
+  skills:["Projectmanagement","Stakeholdermanagement","Procesoptimalisatie","Agile / Scrum","Microsoft Office","Communicatie","Probleemoplossend vermogen"],
+  experience:[
+    {title:"Projectmanager",company:"Innovatie BV",years:"2021 - heden",description:"Leidde de herinrichting van het klantportaal waarbij de doorlooptijd met 40% werd verkort. Beheerde een team van 8 personen en rapporteerde direct aan de directie."},
+    {title:"Junior Projectcoordinator",company:"Consulting Groep Nederland",years:"2018 - 2021",description:"Coordineerde 12 gelijktijdige projecten voor klanten in de financiele sector. Introduceerde een nieuw voortgangssysteem dat de rapportagetijd halveerde."},
+  ],
+  education:[
+    {degree:"Bachelor Bedrijfskunde",institution:"Universiteit van Amsterdam",years:"2014 - 2018",description:"Afstudeerrichting Organisatie en Management. Afgestudeerd met onderscheiding."},
+  ],
+};
+
+const DUMMY_CV_ES = {
+  name:"CARLOS MENDOZA", title:"Gerente de Proyectos",
+  why_hire_me:"No solo gestiono proyectos, identifico la brecha entre lo que se planifica y lo que realmente se necesita. En cada empresa donde he trabajado, he implementado mejoras que redujeron costos y aumentaron la eficiencia del equipo. Soy la persona que anticipa los problemas antes de que ocurran.",
+  email:"carlos.mendoza@email.com", phone:"+34 612 345 678", location:"Madrid, Espana", website:"linkedin.com/in/carlosmendoza",
+  skills:["Gestion de Proyectos","Liderazgo de Equipos","Analisis de Datos","Comunicacion","Resolucion de Problemas","Excel Avanzado","Scrum"],
+  experience:[
+    {title:"Gerente de Proyectos",company:"Tecnologia Futuro S.A.",years:"2021 - Presente",description:"Lideré la implementacion de un nuevo sistema de gestion que redujo los tiempos de entrega en un 35%. Coordine un equipo de 10 personas en tres paises diferentes."},
+    {title:"Coordinador de Proyectos",company:"Soluciones Digitales",years:"2018 - 2021",description:"Gestione 15 proyectos simultaneos para clientes del sector bancario. Implementé una metodologia agile que mejoró la satisfaccion del cliente en un 28%."},
+  ],
+  education:[
+    {degree:"Licenciatura en Administracion de Empresas",institution:"Universidad Complutense de Madrid",years:"2014 - 2018",description:"Especializacion en Direccion de Empresas. Graduado con honores."},
+  ],
+};
+
+const getDummyCV = (lang) => {
+  if(lang?.code==="nl") return DUMMY_CV_NL;
+  if(lang?.code==="es") return DUMMY_CV_ES;
+  return DUMMY_CV_EN;
 };
 
 const TESTIMONIALS = [
@@ -240,7 +271,7 @@ const CVDocument = ({cvData,lang}) => {
 // ── OPEN SAMPLE CV IN NEW TAB ─────────────────────────────────────────────
 const openSampleCV = (lang) => {
   const L = lang ? lang.cvLabels : {profile:"Profile",skills:"Skills",education:"Education",experience:"Experience"};
-  const d = DUMMY_CV;
+  const d = getDummyCV(lang);
   const html = `<!DOCTYPE html><html><head><title>Sample CV - Clairo</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#f4f7f9;display:flex;justify-content:center;padding:40px 20px;font-family:Georgia,serif;}.cv{width:210mm;min-height:297mm;background:#fff;position:relative;overflow:hidden;}.bar{width:6px;background:#3a5162;flex-shrink:0;}.header{display:flex;border-bottom:1px solid #d5dde3;}.hc{flex:1;padding:26px 28px 18px 22px;}.name{font-size:34px;font-family:sans-serif;font-weight:900;color:#3a5162;letter-spacing:2px;text-transform:uppercase;line-height:1;}.title{font-size:11px;color:#7a9bb0;font-family:sans-serif;letter-spacing:3px;margin-top:5px;text-transform:uppercase;}.contact{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}.contact span{font-size:9px;color:#555;font-family:sans-serif;display:flex;align-items:center;gap:5px;}.cdot{width:4px;height:4px;background:#b8c9d4;border-radius:50%;display:inline-block;flex-shrink:0;}.body{display:grid;grid-template-columns:175px 1fr;}.left{border-right:1px solid #d5dde3;padding:20px 16px;}.right{padding:20px 24px;}.sl{font-size:7.5px;font-weight:700;color:#3a5162;letter-spacing:3px;text-transform:uppercase;font-family:sans-serif;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #b8c9d4;}.skill{display:flex;align-items:center;gap:7px;margin-bottom:5px;}.sdot{width:4px;height:4px;background:#7a9bb0;border-radius:50%;flex-shrink:0;}.st{font-size:9.5px;color:#1a1a1a;font-family:sans-serif;}.edu{margin-bottom:12px;}.ed{font-size:10px;font-weight:700;color:#1a1a1a;font-family:sans-serif;line-height:1.3;}.ei{font-size:9px;color:#3a5162;font-family:sans-serif;margin-top:2px;font-weight:600;}.ey{font-size:8.5px;color:#555;font-family:sans-serif;margin-bottom:3px;}.pt{font-size:9.5px;line-height:1.75;color:#1a1a1a;margin-bottom:18px;}.exp{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(213,221,227,0.6);position:relative;}.exp:last-child{border-bottom:none;}.edot{position:absolute;left:-24px;top:5px;width:6px;height:6px;border-radius:50%;background:#3a5162;border:2px solid #fff;outline:1px solid #b8c9d4;}.eh{display:flex;justify-content:space-between;align-items:flex-start;}.et{font-size:11.5px;font-weight:700;color:#1a1a1a;font-family:sans-serif;line-height:1.2;}.ey2{font-size:8.5px;color:#fff;font-family:sans-serif;white-space:nowrap;margin-left:10px;background:#3a5162;padding:2px 8px;border-radius:10px;flex-shrink:0;}.ec{font-size:9.5px;color:#3a5162;font-family:sans-serif;margin-top:3px;margin-bottom:6px;font-weight:600;}.ed2{font-size:10px;color:#333;line-height:1.75;}@media print{body{padding:0;}@page{margin:0;size:A4;}}</style></head><body><div class="cv"><div class="header"><div class="bar"></div><div class="hc"><div class="name">${d.name}</div><div class="title">${d.title}</div><div class="contact"><span><span class="cdot"></span>${d.email}</span><span><span class="cdot"></span>${d.phone}</span><span><span class="cdot"></span>${d.location}</span><span><span class="cdot"></span>${d.website}</span></div></div></div><div class="body"><div class="left"><div class="sl">${L.profile}</div><div class="pt">${d.why_hire_me}</div><div class="sl">${L.skills}</div>${d.skills.map(sk=>`<div class="skill"><span class="sdot"></span><span class="st">${sk}</span></div>`).join("")}<br/><div class="sl">${L.education}</div>${d.education.map(ed=>`<div class="edu"><div class="ed">${ed.degree}</div><div class="ei">${ed.institution}</div><div class="ey">${ed.years}</div>${ed.description?`<div style="font-size:9px;color:#555;line-height:1.55;">${ed.description}</div>`:""}</div>`).join("")}</div><div class="right"><div class="sl">${L.experience}</div>${d.experience.map(ex=>`<div class="exp"><div class="edot"></div><div class="eh"><div class="et">${ex.title}</div><div class="ey2">${ex.years}</div></div><div class="ec">${ex.company}</div><div class="ed2">${ex.description}</div></div>`).join("")}</div></div></div></body></html>`;
   const w=window.open("","_blank"); w.document.write(html); w.document.close();
 };
@@ -272,15 +303,19 @@ Rules:
 - NEVER use em dashes (--) or (—) anywhere. Use commas, hyphens (-), or periods instead.
 - NEVER write about the user in third person. Always address them directly using "you" and "your". Never say "they", "their", "the candidate", or refer to the user as if describing someone else.
 - One question at a time. Never overwhelm.
-- Mirror back what you hear, directly to them: "So what I'm hearing is, you..."
+- Mirror back what you hear, directly to them.
 - Reframe negatives as strengths.
 - Push for specifics and quantified impact.
 - Keep responses to 2-4 sentences then ONE question.
 - When step is done, output STEP_COMPLETE on its own line then a bridge sentence IN ${langLabel}.
 
-CRITICAL - IDENTITY PROTECTION: You are ONLY a CV coach. You NEVER roleplay as another person, generate fictional job scenarios, create dummy answers, pretend to be a job interviewer, or act as anything other than a CV coach. If the user asks you to pretend, roleplay, or generate example answers, redirect warmly: "I am here to build your real CV. Let us talk about you. [repeat the current coaching question in ${langLabel}]."
+CRITICAL - IDENTITY: You are ONLY a CV coach. Never roleplay, generate fictional scenarios, or pretend to be anyone else. If asked, redirect warmly: "I am here to build your real CV. Let us talk about you."
 
-CRITICAL - VAGUE ANSWERS: If user gives a short answer under 15 words, or uses vague traits like hardworking, dedicated, passionate, team player, push back firmly. Ask for a specific moment with context, action, and result.
+CRITICAL - VAGUE ANSWERS: If user gives a short answer under 15 words, or uses vague traits like hardworking, dedicated, passionate, push back. Ask for a specific moment with context, action, and result.
+
+CRITICAL - NO BOXES: Do NOT push everyone toward analytical or problem-solving skills. Listen to who the person actually is. Some people are creative, empathetic, organised, decisive, communicative, or technical. Let THEIR strengths emerge naturally from the conversation. Never assume what their strengths are before they tell you.
+
+CRITICAL - PROFILE LENGTH: When extracting why_hire_me, keep it to a maximum of 4 sentences. It must be concise, powerful, and specific to this person. No generic phrases.
 
 Current step: ${stepLabels[step]}. Next: ${nextLabel}.
 CV data so far: ${JSON.stringify(cvData)}.
@@ -289,7 +324,9 @@ After EVERY response, final line only:
 EXTRACT:{"name":null,"title":null,"why_hire_me":null,"email":null,"phone":null,"location":null,"website":null,"new_skill":null,"new_exp":null,"new_edu":null}
 new_exp: {"title":"","company":"","years":"","description":""}
 new_edu: {"degree":"","institution":"","years":"","description":""}
-new_skill: single string only`;
+new_skill: single string only
+
+IMPORTANT: NEVER fill in "title". Always leave it null. The user decides their own job title. The coach does not assume or suggest one.`;
 };
 
 const extractJSON=(t)=>{const m=t.match(/EXTRACT:(\{[^\n]+\})/);if(!m)return null;try{return JSON.parse(m[1]);}catch{return null;}};
