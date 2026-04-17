@@ -182,3 +182,10 @@
     border-right-color: var(--border);
   }
 }
+
+.clairo-nav-label-short { display: none; }
+@media (max-width: 599px) {
+  .clairo-nav-label-full { display: none; }
+  .clairo-nav-label-short { display: inline; }
+  .clairo-navbar { overflow-x: hidden; }
+}

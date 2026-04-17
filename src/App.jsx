@@ -597,7 +597,7 @@ export default function App() {
           onSkip={()=>setPendingDuplicate(null)}
         />
       )}
-      <div style={{background:C.primary,padding:"0",flexShrink:0}}>
+      <div className="clairo-navbar" style={{background:C.primary,padding:"0",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",flexWrap:"nowrap",gap:6}}>
           <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
             <div style={{color:C.accent,fontSize:16,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:4,fontStyle:"italic"}}>clairo</div>
@@ -605,8 +605,8 @@ export default function App() {
             <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:12,cursor:"pointer",padding:"1px 5px",flexShrink:0}}>{selectedLang.flag}</button>
           </div>
           <div style={{display:"flex",gap:4,alignItems:"center",flexWrap:"nowrap"}}>
-            {[["chat",lang.coaching||"COACHING"],["data",lang.cvdata||"CV DATA"],["preview",lang.cvpreview||"CV VOORBEELD"]].map(([p,l])=>(
-              <button key={p} onClick={()=>setPanel(p)} style={{padding:"3px 8px",border:`1px solid ${panel===p?C.white:C.mid}`,borderRadius:4,background:panel===p?C.white:"transparent",color:panel===p?C.primary:C.light,fontSize:8,cursor:"pointer",fontFamily:"sans-serif",letterSpacing:0.5,whiteSpace:"nowrap",flexShrink:0}}>{l}</button>
+            {[["chat",lang.coaching||"COACHING","COACHING"],["data",lang.cvdata||"CV DATA","DATA"],["preview",lang.cvpreview||"CV VOORBEELD","CV"]].map(([p,l,s])=>(
+              <button key={p} onClick={()=>setPanel(p)} style={{padding:"3px 8px",border:`1px solid ${panel===p?C.white:C.mid}`,borderRadius:4,background:panel===p?C.white:"transparent",color:panel===p?C.primary:C.light,fontSize:8,cursor:"pointer",fontFamily:"sans-serif",letterSpacing:0.5,whiteSpace:"nowrap",flexShrink:0}}><span className="clairo-nav-label-full">{l}</span><span className="clairo-nav-label-short">{s}</span></button>
             ))}
           </div>
         </div>
