@@ -597,18 +597,24 @@ export default function App() {
           onSkip={()=>setPendingDuplicate(null)}
         />
       )}
-      <DiamondBanner height={48}/>
-      <div style={{background:C.primary,padding:"7px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div style={{color:C.accent,fontSize:17,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
-          <button onClick={()=>setScreen("welcome")} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:9,cursor:"pointer",padding:"3px 8px",fontFamily:"sans-serif",letterSpacing:1}}>HOME</button>
+      <div style={{background:C.primary,padding:"0",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",flexWrap:"nowrap",gap:6}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+            <div style={{color:C.accent,fontSize:16,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:4,fontStyle:"italic"}}>clairo</div>
+            <button onClick={()=>setScreen("welcome")} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:8,cursor:"pointer",padding:"2px 7px",fontFamily:"sans-serif",letterSpacing:1,flexShrink:0}}>HOME</button>
+            <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:12,cursor:"pointer",padding:"1px 5px",flexShrink:0}}>{selectedLang.flag}</button>
+          </div>
+          <div style={{display:"flex",gap:4,alignItems:"center",flexWrap:"nowrap"}}>
+            {[["chat",lang.coaching||"COACHING"],["data",lang.cvdata||"CV DATA"],["preview",lang.cvpreview||"CV VOORBEELD"]].map(([p,l])=>(
+              <button key={p} onClick={()=>setPanel(p)} style={{padding:"3px 8px",border:`1px solid ${panel===p?C.white:C.mid}`,borderRadius:4,background:panel===p?C.white:"transparent",color:panel===p?C.primary:C.light,fontSize:8,cursor:"pointer",fontFamily:"sans-serif",letterSpacing:0.5,whiteSpace:"nowrap",flexShrink:0}}>{l}</button>
+            ))}
+          </div>
         </div>
-        <div style={{display:"flex",gap:6,alignItems:"center"}}>
-          <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:9,cursor:"pointer",padding:"3px 8px",fontFamily:"sans-serif"}}>{selectedLang.flag}</button>
-          <div style={{width:1,height:14,background:C.mid}}/>
-          {[["chat",lang.coaching||"COACHING"],["data",lang.cvdata||"CV DATA"],["preview",lang.cvpreview||"CV PREVIEW"]].map(([p,l])=>(
-            <button key={p} onClick={()=>setPanel(p)} style={{padding:"3px 10px",border:`1px solid ${panel===p?C.white:C.mid}`,borderRadius:4,background:panel===p?C.white:"transparent",color:panel===p?C.primary:C.light,fontSize:9,cursor:"pointer",fontFamily:"sans-serif",letterSpacing:1}}>{l}</button>
-          ))}
+        <div style={{height:3,background:"rgba(255,255,255,0.1)"}}>
+          <div style={{width:`${progress}%`,height:"100%",background:C.light,transition:"width 0.5s"}}/>
+        </div>
+        <div style={{background:"rgba(0,0,0,0.15)",padding:"3px 12px",fontSize:8,color:C.mid,fontFamily:"sans-serif",letterSpacing:0.5}}>
+          STAP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}
         </div>
       </div>
 
