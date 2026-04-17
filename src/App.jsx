@@ -637,8 +637,7 @@ export default function App() {
       <div style={{background:C.primary,flexShrink:0,position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",overflow:"hidden"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-            <img src="/clairo-logo.svg" alt="clairo" style={{height:16,objectFit:"contain"}}/>
-            <button onClick={()=>setScreen("welcome")} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:8,cursor:"pointer",padding:"2px 6px",fontFamily:"sans-serif",flexShrink:0}}>HOME</button>
+            <img src="/clairo-logo.svg" alt="clairo" onClick={()=>setScreen("welcome")} style={{height:16,objectFit:"contain",cursor:"pointer"}}/>
             <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:11,cursor:"pointer",padding:"1px 4px",flexShrink:0}}>{selectedLang.flag}</button>
           </div>
           <div style={{display:"flex",gap:3,alignItems:"center",flexShrink:0}}>
