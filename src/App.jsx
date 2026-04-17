@@ -613,7 +613,7 @@ export default function App() {
       </div>
 
       <div style={{display:"flex",flex:1,overflow:"hidden"}}>
-        <div style={{width:110,minWidth:90,background:C.primary,flexShrink:0,padding:"12px 0",overflowY:"auto"}}>
+        <div className="clairo-sidebar" style={{width:110,minWidth:90,background:C.primary,flexShrink:0,padding:"12px 0",overflowY:"auto"}}>
           {STEPS.map((s,i)=>(
             <div key={s} onClick={()=>{if(i<=stepIdx){setStep(s);stepRef.current=s;setPanel("chat");}}} style={{padding:"7px 8px",cursor:i<=stepIdx?"pointer":"default",borderLeft:step===s?`3px solid ${C.light}`:"3px solid transparent",background:step===s?"rgba(255,255,255,0.1)":"transparent",color:i<=stepIdx?C.accent:"rgba(181,201,212,0.3)",fontSize:8,letterSpacing:0.5,fontFamily:"sans-serif",fontWeight:step===s?700:400,transition:"all 0.3s",lineHeight:1.3}}>
               {i<stepIdx&&<span style={{marginRight:3,fontSize:7}}>✓</span>}
@@ -752,7 +752,8 @@ export default function App() {
         textarea:focus, input:focus { outline:2px solid ${C.mid}; }
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-thumb { background:${C.light}; border-radius:2px; }
-        @media (max-width:480px) {
+        @media (max-width:600px) {
+          .clairo-sidebar { display:none !important; }
           textarea { font-size:16px !important; }
         }
       `}</style>
