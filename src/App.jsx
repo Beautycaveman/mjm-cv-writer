@@ -634,9 +634,9 @@ export default function App() {
 
         <div style={{flex:1,padding:10,overflow:"hidden",minWidth:0}}>
           {panel==="chat"&&(
-            <div style={{display:"flex",flexDirection:"column",height:"calc(100dvh - 158px)"}}>
+            <div style={{display:"flex",flexDirection:"column",height:"calc(100dvh - 120px)"}}>
               <div style={{background:C.section,borderRadius:4,padding:"6px 11px",marginBottom:6,borderLeft:`3px solid ${C.primary}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-                <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1}}>STEP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}</span>
+                <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1}}>STAP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}</span>
                 <button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.light}`,borderRadius:3,color:C.muted,fontSize:9,cursor:"pointer",padding:"2px 8px",fontFamily:"sans-serif",flexShrink:0}}>{lang.skip||"SKIP"}</button>
               </div>
               {hints[step]?.length>0&&(
@@ -660,15 +660,15 @@ export default function App() {
                 <div ref={messagesEnd}/>
               </div>
               {step!=="done"?(
-                <div style={{display:"flex",gap:7,marginTop:7}}>
+                <div style={{display:"flex",gap:7,padding:"8px 0",borderTop:`1px solid ${C.border}`,background:"#f4f7f9",flexShrink:0}}>
                   <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKey} rows={2}
                     style={{flex:1,padding:"9px 11px",border:`1px solid ${C.border}`,borderRadius:6,resize:"none",fontFamily:"Georgia,serif",fontSize:13,color:"#1a1a1a",outline:"none",background:"#ffffff"}}/>
-                  <button onClick={sendMessage} disabled={loading||!input.trim()} style={{padding:"0 15px",background:C.primary,color:C.accent,border:"none",borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"sans-serif",letterSpacing:1,opacity:loading||!input.trim()?0.5:1}}>{lang.send||"SEND"}</button>
+                  <button onClick={sendMessage} disabled={loading||!input.trim()} style={{padding:"0 15px",background:C.primary,color:C.accent,border:"none",borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"sans-serif",letterSpacing:1,opacity:loading||!input.trim()?0.5:1,flexShrink:0}}>{lang.send||"VERSTUUR"}</button>
                 </div>
               ):(
-                <div style={{marginTop:10,display:"flex",flexDirection:"column",gap:8}}>
-                  <button onClick={()=>setPanel("preview")} style={{width:"100%",padding:"11px 0",background:C.primary,color:C.accent,border:"none",borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>{lang.viewCV||"VIEW MY CV"}</button>
-                  <button onClick={()=>{clearSession();setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});setMessages([{role:"assistant",content:getOpener("identity")}]);}} style={{width:"100%",padding:"10px 0",background:"transparent",color:C.primary,border:`1px solid ${C.primary}`,borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>START NEW CV</button>
+                <div style={{padding:"8px 0",borderTop:`1px solid ${C.border}`,display:"flex",flexDirection:"column",gap:8,flexShrink:0}}>
+                  <button onClick={()=>setPanel("preview")} style={{width:"100%",padding:"11px 0",background:C.primary,color:C.accent,border:"none",borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>{lang.viewCV||"BEKIJK MIJN CV"}</button>
+                  <button onClick={()=>{clearSession();setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});setMessages([{role:"assistant",content:getOpener("identity")}]);}} style={{width:"100%",padding:"10px 0",background:"transparent",color:C.primary,border:`1px solid ${C.primary}`,borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>NIEUW CV STARTEN</button>
                 </div>
               )}
             </div>
