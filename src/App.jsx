@@ -589,7 +589,7 @@ export default function App() {
 
   // COACHING APP
   return(
-    <div style={{minHeight:"100vh",background:"#f4f7f9",display:"flex",flexDirection:"column"}}>
+    <div style={{height:"100dvh",background:"#f4f7f9",display:"flex",flexDirection:"column",overflow:"hidden"}}>
       {pendingDuplicate&&(
         <DuplicateModal pending={pendingDuplicate}
           onConfirm={()=>{setCvData(prev=>{const f=pendingDuplicate.type==="exp"?"experience":"education";return{...prev,[f]:[...prev[f],pendingDuplicate.data]};});setPendingDuplicate(null);}}
@@ -613,8 +613,11 @@ export default function App() {
         <div style={{height:2,background:"rgba(255,255,255,0.1)"}}>
           <div style={{width:`${progress}%`,height:"100%",background:C.light,transition:"width 0.5s"}}/>
         </div>
-        <div style={{padding:"2px 12px",fontSize:8,color:C.mid,fontFamily:"sans-serif"}}>
-          STAP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}
+        <div style={{padding:"2px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{fontSize:8,color:C.mid,fontFamily:"sans-serif"}}>
+            STAP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}
+          </div>
+          {step!=="done"&&<button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:3,color:C.light,fontSize:8,cursor:"pointer",padding:"1px 8px",fontFamily:"sans-serif"}}>{lang.skip||"OVERSLAAN"}</button>}
         </div>
       </div>
 
@@ -632,26 +635,22 @@ export default function App() {
           <div style={{color:C.mid,fontSize:8,padding:"4px 8px",letterSpacing:0.5}}>{(lang.done||"%% DONE").replace("%%",progress)}</div>
         </div>
 
-        <div style={{flex:1,padding:10,overflow:"hidden",minWidth:0}}>
+        <div style={{flex:1,overflow:"hidden",minWidth:0,display:"flex",flexDirection:"column"}}>
           {panel==="chat"&&(
-            <div style={{display:"flex",flexDirection:"column",height:"calc(100dvh - 120px)"}}>
-              <div style={{background:C.section,borderRadius:4,padding:"6px 11px",marginBottom:6,borderLeft:`3px solid ${C.primary}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-                <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1}}>STAP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}</span>
-                <button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.light}`,borderRadius:3,color:C.muted,fontSize:9,cursor:"pointer",padding:"2px 8px",fontFamily:"sans-serif",flexShrink:0}}>{lang.skip||"SKIP"}</button>
-              </div>
+            <div style={{display:"flex",flexDirection:"column",flex:1,overflow:"hidden"}}>
               {hints[step]?.length>0&&(
-                <div style={{background:"rgba(58,81,98,0.05)",border:`1px dashed ${C.light}`,borderRadius:4,padding:"7px 11px",marginBottom:7,display:"flex",alignItems:"flex-start",gap:7,flexShrink:0}}>
+                <div style={{background:"rgba(58,81,98,0.05)",border:`1px dashed ${C.light}`,borderRadius:4,padding:"7px 11px",margin:"8px 10px 0",display:"flex",alignItems:"flex-start",gap:7,flexShrink:0}}>
                   <span style={{fontSize:12,flexShrink:0}}>💡</span>
                   <span style={{fontSize:11,color:C.primary,fontFamily:"Georgia,serif",lineHeight:1.55,fontStyle:"italic"}}>
                     {hints[step][Math.floor(Date.now()/30000)%hints[step].length]}
                   </span>
                 </div>
               )}
-              <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:9,paddingBottom:8}}>
-                {messages.map((m,i)=>(
+              <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:9,padding:"8px 10px",paddingBottom:4}}>
+                {messages.filter(m=>m.step===step||m.step===undefined).map((m,i)=>(
                   <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",alignItems:"flex-start"}}>
                     {m.role==="assistant"&&<div style={{width:24,height:24,borderRadius:"50%",background:C.primary,color:C.accent,fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",marginRight:6,flexShrink:0,marginTop:2,fontFamily:"Georgia,serif",fontStyle:"italic"}}>c</div>}
-                    <div style={{maxWidth:"76%",padding:"9px 13px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?C.primary:C.white,color:m.role==="user"?C.accent:C.dark,fontSize:13,lineHeight:1.65,border:m.role==="assistant"?`1px solid ${C.border}`:"none",fontFamily:"Georgia,serif"}}>
+                    <div style={{maxWidth:"85%",padding:"9px 13px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?C.primary:C.white,color:m.role==="user"?C.accent:C.dark,fontSize:13,lineHeight:1.65,border:m.role==="assistant"?`1px solid ${C.border}`:"none",fontFamily:"Georgia,serif"}}>
                       {m.content}
                     </div>
                   </div>
@@ -660,13 +659,13 @@ export default function App() {
                 <div ref={messagesEnd}/>
               </div>
               {step!=="done"?(
-                <div style={{display:"flex",gap:7,padding:"8px 0",borderTop:`1px solid ${C.border}`,background:"#f4f7f9",flexShrink:0}}>
+                <div style={{display:"flex",gap:7,padding:"8px 10px",borderTop:`1px solid ${C.border}`,background:"#f4f7f9",flexShrink:0}}>
                   <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKey} rows={2}
-                    style={{flex:1,padding:"9px 11px",border:`1px solid ${C.border}`,borderRadius:6,resize:"none",fontFamily:"Georgia,serif",fontSize:13,color:"#1a1a1a",outline:"none",background:"#ffffff"}}/>
+                    style={{flex:1,padding:"9px 11px",border:`1px solid ${C.border}`,borderRadius:6,resize:"none",fontFamily:"Georgia,serif",fontSize:16,color:"#1a1a1a",outline:"none",background:"#ffffff"}}/>
                   <button onClick={sendMessage} disabled={loading||!input.trim()} style={{padding:"0 15px",background:C.primary,color:C.accent,border:"none",borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"sans-serif",letterSpacing:1,opacity:loading||!input.trim()?0.5:1,flexShrink:0}}>{lang.send||"VERSTUUR"}</button>
                 </div>
               ):(
-                <div style={{padding:"8px 0",borderTop:`1px solid ${C.border}`,display:"flex",flexDirection:"column",gap:8,flexShrink:0}}>
+                <div style={{padding:"8px 10px",borderTop:`1px solid ${C.border}`,display:"flex",flexDirection:"column",gap:8,flexShrink:0}}>
                   <button onClick={()=>setPanel("preview")} style={{width:"100%",padding:"11px 0",background:C.primary,color:C.accent,border:"none",borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>{lang.viewCV||"BEKIJK MIJN CV"}</button>
                   <button onClick={()=>{clearSession();setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});setMessages([{role:"assistant",content:getOpener("identity")}]);}} style={{width:"100%",padding:"10px 0",background:"transparent",color:C.primary,border:`1px solid ${C.primary}`,borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>NIEUW CV STARTEN</button>
                 </div>
