@@ -685,7 +685,7 @@ export default function App() {
               <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:9,padding:"8px 10px",paddingBottom:4}}>
                 {messages.filter(m=>m.step===step||m.step===undefined).map((m,i)=>(
                   <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",alignItems:"flex-start"}}>
-                    {m.role==="assistant"&&<div style={{width:20,height:20,borderRadius:"50%",background:C.primary,display:"flex",alignItems:"center",justifyContent:"center",marginRight:6,flexShrink:0,marginTop:2,overflow:"hidden",border:`1px solid ${C.light}`}}><img src="/favicon.svg" alt="c" style={{width:12,height:12,filter:"brightness(0) invert(1)"}}/></div>}
+                    {m.role==="assistant"&&<div style={{width:20,height:20,borderRadius:"50%",background:C.primary,display:"flex",alignItems:"center",justifyContent:"center",marginRight:6,flexShrink:0,marginTop:2,overflow:"hidden"}}><img src="/clairo-icon.svg" alt="c" style={{width:14,height:14}}/></div>}
                     <div style={{maxWidth:"85%",padding:"9px 13px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?C.primary:C.white,color:m.role==="user"?C.accent:C.dark,fontSize:13,lineHeight:1.65,border:m.role==="assistant"?`1px solid ${C.border}`:"none",fontFamily:"Georgia,serif"}}>
                       {m.content}
                     </div>
