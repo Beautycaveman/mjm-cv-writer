@@ -477,7 +477,7 @@ export default function App() {
     try{
       const res=await fetch("/api/chat",{
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
           system:buildPrompt(coachLang,cur,lang.stepLabels||LANGS.en.stepLabels,cvData),
           messages:msgs.map(m=>({role:m.role,content:m.content}))}),
@@ -495,7 +495,7 @@ export default function App() {
         }
       }
     }catch{
-      setMessages(prev=>[...prev,{role:"assistant",content:"Something went wrong. Please try again."}]);
+      setMessages(prev=>[...prev,{role:"assistant",content:"De coach heeft even een pauze nodig. Probeer het over een minuut opnieuw. Als het probleem aanhoudt, is er mogelijk een storing bij onze dienstverlener."}]);
     }
     setLoading(false);
   };
@@ -645,7 +645,7 @@ export default function App() {
                 {messages.map((m,i)=>(
                   <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",alignItems:"flex-start"}}>
                     {m.role==="assistant"&&<div style={{width:24,height:24,borderRadius:"50%",background:C.primary,color:C.accent,fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",marginRight:6,flexShrink:0,marginTop:2,fontFamily:"Georgia,serif",fontStyle:"italic"}}>c</div>}
-                    <div style={{maxWidth:"85%",padding:"9px 13px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?C.primary:C.white,color:m.role==="user"?C.accent:C.dark,fontSize:13,lineHeight:1.65,border:m.role==="assistant"?`1px solid ${C.border}`:"none",fontFamily:"Georgia,serif"}}>
+                    <div style={{maxWidth:"76%",padding:"9px 13px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?C.primary:C.white,color:m.role==="user"?C.accent:C.dark,fontSize:13,lineHeight:1.65,border:m.role==="assistant"?`1px solid ${C.border}`:"none",fontFamily:"Georgia,serif"}}>
                       {m.content}
                     </div>
                   </div>
@@ -656,7 +656,7 @@ export default function App() {
               {step!=="done"?(
                 <div style={{display:"flex",gap:7,marginTop:7}}>
                   <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={handleKey} rows={2}
-                    style={{flex:1,padding:"9px 11px",border:`1px solid ${C.border}`,borderRadius:6,resize:"none",fontFamily:"Georgia,serif",fontSize:13,color:"#1a1a1a",outline:"none",background:"#ffffff"}}
+                    style={{flex:1,padding:"9px 11px",border:`1px solid ${C.border}`,borderRadius:6,resize:"none",fontFamily:"Georgia,serif",fontSize:13,color:"#1a1a1a",outline:"none",background:"#ffffff"}}/>
                   <button onClick={sendMessage} disabled={loading||!input.trim()} style={{padding:"0 15px",background:C.primary,color:C.accent,border:"none",borderRadius:6,cursor:"pointer",fontSize:10,fontFamily:"sans-serif",letterSpacing:1,opacity:loading||!input.trim()?0.5:1}}>{lang.send||"SEND"}</button>
                 </div>
               ):(
@@ -744,7 +744,8 @@ export default function App() {
         </div>
       </div>
       <style>{`
-        * { box-sizing:border-box; } textarea { background:#ffffff !important; color:#1a1a1a !important; } @media (max-width:600px) { .sidebar { width:100px !important; } }
+        * { box-sizing:border-box; }
+        textarea, input { background:#ffffff !important; color:#1a1a1a !important; }
         @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.1)} }
         textarea:focus, input:focus { outline:2px solid ${C.mid}; }
         ::-webkit-scrollbar { width:4px; }
