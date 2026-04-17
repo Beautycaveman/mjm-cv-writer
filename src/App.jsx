@@ -46,7 +46,7 @@ const LANGS = {
     },
     openers:{
       identity:"Welcome to Clairo. My job is to dig deep and pull out the real story of who you are. No templates, no boxes to tick. Let's start: forget job titles for a moment. How would you describe yourself as a person? What drives you?",
-      experience:"Good. Now let's talk about your work history. Start with your very first job, even if it feels small or unrelated. What was it, and what years did you work there?",
+      experience:"Good. Now let's talk about your work history. Everything counts: holiday jobs, part-time work, volunteering, internships, babysitting, or any odd jobs. Start with your very first paid or unpaid experience. What was it, and what years did you work there?",
       education:"Let's talk about your education. Start with the highest level you completed. What did you study, where, and when?",
       skills:"Now let's surface your skills. Based on everything you have shared, what do you think you do better than most people around you?",
       whyhire:"Here is the big question. If you had 30 seconds to tell someone why they should hire you over anyone else, what would you say? Be bold. This becomes your Profile Statement, the first thing a hiring manager reads.",
@@ -77,7 +77,7 @@ const LANGS = {
     stepLabels:{ identity:"Wie Ben Jij", experience:"Jouw Ervaring", education:"Opleiding", skills:"Jouw Vaardigheden", whyhire:"Waarom Jij", contact:"Contactgegevens", done:"Beoordelen & Klaar" },
     hints:{
       identity:["Tip: Vermijd woorden als 'hardwerkend'. Geef een concreet voorbeeld.","Denk: Wanneer vroegen mensen jou het laatste om hulp?","Vraag jezelf: Welk probleem zie ik dat anderen voorbij lopen?"],
-      experience:["Tip: Denk aan wat er door jou veranderde, niet alleen wat je deed.","Denk: Heb je een probleem opgelost, iets gebouwd of iemand geholpen?","Vraag jezelf: Wat zou er slechter zijn gegaan als ik er niet was?"],
+      experience:["Tip: Alles telt mee. Vakantiebaantjes, vrijwilligerswerk, stages, bijbaantjes. Noem ze allemaal.","Denk: Wat veranderde er door jouw aanwezigheid op die plek?","Vraag jezelf: Wat zou er slechter zijn gegaan als ik er niet was?"],
       education:["Tip: Noem specifieke projecten of prestaties, niet alleen de naam van je diploma.","Denk: Was er een project waar je echt trots op was?","Vraag jezelf: Wat leerde ik dat ik nu nog steeds gebruik?"],
       skills:["Tip: Noem echte tools en software, niet alleen algemene vaardigheden.","Denk: Waarvoor vragen collega's jou het vaakst om hulp?","Vraag jezelf: Wat heeft mij echt tijd en moeite gekost om te leren?"],
       whyhire:["Tip: Wees gedurfd en specifiek. Dit is niet het moment voor bescheidenheid.","Denk: Welk patroon loopt door al mijn banen heen?","Vraag jezelf: Wat zou mijn beste manager over mij zeggen in 30 seconden?"],
@@ -86,7 +86,7 @@ const LANGS = {
     },
     openers:{
       identity:"Welkom bij Clairo. Mijn taak is om diep te graven en het echte verhaal naar boven te halen over wie jij bent. Geen templates, geen hokjes. Vergeet functietitels even. Hoe zou jij jezelf omschrijven als persoon? Wat drijft jou?",
-      experience:"Goed. Laten we het nu hebben over jouw werkgeschiedenis. Begin bij je allereerste baan, ook als die klein of niet relevant lijkt. Wat was het, en in welke jaren werkte je daar?",
+      experience:"Goed. Laten we het nu hebben over jouw werkgeschiedenis. Alles telt mee: vakantiebaantjes, bijbaantjes, vrijwilligerswerk, stages, zelfs oppassen of klusjes. Begin bij je allereerste betaalde of onbetaalde werkervaring. Wat was het, en in welke jaren werkte je daar?",
       education:"Laten we het hebben over jouw opleiding. Begin bij het hoogste niveau dat je hebt afgerond. Wat studeerde je, waar en wanneer?",
       skills:"Laten we nu jouw vaardigheden naar boven halen. Op basis van alles wat je hebt gedeeld, wat denk je dat jij beter doet dan de meeste mensen om je heen?",
       whyhire:"Dit is de grote vraag. Als je 30 seconden had om iemand te vertellen waarom ze jou zouden moeten aannemen boven iedereen, wat zou je zeggen? Wees gedurfd.",
@@ -126,7 +126,7 @@ const LANGS = {
     },
     openers:{
       identity:"Bienvenido a Clairo. Mi trabajo es profundizar y sacar a la luz la historia real de quién eres. Sin plantillas, sin casillas. Olvida los títulos de trabajo por un momento. ¿Cómo te describirías como persona? ¿Qué te impulsa?",
-      experience:"Bien. Ahora hablemos de tu historial laboral. Empieza con tu primer trabajo, aunque parezca pequeño. ¿Cuál fue y en qué años trabajaste allí?",
+      experience:"Bien. Ahora hablemos de tu historial laboral. Todo cuenta: trabajos de verano, trabajos a tiempo parcial, voluntariado, prácticas, cuidar niños o cualquier trabajo ocasional. Empieza con tu primera experiencia pagada o no pagada. ¿Cuál fue y en qué años trabajaste allí?",
       education:"Hablemos de tu educación. Empieza por el nivel más alto que completaste. ¿Qué estudiaste, dónde y cuándo?",
       skills:"Ahora vamos a descubrir tus habilidades. Basándote en todo lo que has compartido, ¿qué crees que haces mejor que la mayoría?",
       whyhire:"Esta es la gran pregunta. Si tuvieras 30 segundos para decirle a alguien por qué debería contratarte, ¿qué dirías? Sé audaz.",
@@ -612,29 +612,29 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{display:"flex",flex:1}}>
-        <div style={{width:150,background:C.primary,flexShrink:0,padding:"12px 0"}}>
+      <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+        <div style={{width:110,minWidth:90,background:C.primary,flexShrink:0,padding:"12px 0",overflowY:"auto"}}>
           {STEPS.map((s,i)=>(
-            <div key={s} onClick={()=>{if(i<=stepIdx){setStep(s);stepRef.current=s;setPanel("chat");}}} style={{padding:"8px 11px",cursor:i<=stepIdx?"pointer":"default",borderLeft:step===s?`3px solid ${C.light}`:"3px solid transparent",background:step===s?"rgba(255,255,255,0.1)":"transparent",color:i<=stepIdx?C.accent:"rgba(181,201,212,0.3)",fontSize:9,letterSpacing:0.8,fontFamily:"sans-serif",fontWeight:step===s?700:400,transition:"all 0.3s"}}>
-              {i<stepIdx&&<span style={{marginRight:4,fontSize:8}}>✓</span>}
+            <div key={s} onClick={()=>{if(i<=stepIdx){setStep(s);stepRef.current=s;setPanel("chat");}}} style={{padding:"7px 8px",cursor:i<=stepIdx?"pointer":"default",borderLeft:step===s?`3px solid ${C.light}`:"3px solid transparent",background:step===s?"rgba(255,255,255,0.1)":"transparent",color:i<=stepIdx?C.accent:"rgba(181,201,212,0.3)",fontSize:8,letterSpacing:0.5,fontFamily:"sans-serif",fontWeight:step===s?700:400,transition:"all 0.3s",lineHeight:1.3}}>
+              {i<stepIdx&&<span style={{marginRight:3,fontSize:7}}>✓</span>}
               {stepLabels[s].toUpperCase()}
             </div>
           ))}
-          <div style={{margin:"12px 11px 0",height:3,background:"rgba(255,255,255,0.1)",borderRadius:2}}>
+          <div style={{margin:"12px 8px 0",height:3,background:"rgba(255,255,255,0.1)",borderRadius:2}}>
             <div style={{width:`${progress}%`,height:"100%",background:C.light,borderRadius:2,transition:"width 0.5s"}}/>
           </div>
-          <div style={{color:C.mid,fontSize:9,padding:"4px 11px",letterSpacing:1}}>{(lang.done||"%% DONE").replace("%%",progress)}</div>
+          <div style={{color:C.mid,fontSize:8,padding:"4px 8px",letterSpacing:0.5}}>{(lang.done||"%% DONE").replace("%%",progress)}</div>
         </div>
 
-        <div style={{flex:1,padding:13,overflow:"hidden"}}>
+        <div style={{flex:1,padding:10,overflow:"hidden",minWidth:0}}>
           {panel==="chat"&&(
-            <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 158px)"}}>
-              <div style={{background:C.section,borderRadius:4,padding:"6px 11px",marginBottom:6,borderLeft:`3px solid ${C.primary}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{display:"flex",flexDirection:"column",height:"calc(100dvh - 158px)"}}>
+              <div style={{background:C.section,borderRadius:4,padding:"6px 11px",marginBottom:6,borderLeft:`3px solid ${C.primary}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
                 <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1}}>STEP {stepIdx+1}/{STEPS.length}: {stepLabels[step].toUpperCase()}</span>
-                <button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.light}`,borderRadius:3,color:C.muted,fontSize:9,cursor:"pointer",padding:"2px 8px",fontFamily:"sans-serif"}}>{lang.skip||"SKIP"}</button>
+                <button onClick={manualSkip} style={{background:"transparent",border:`1px solid ${C.light}`,borderRadius:3,color:C.muted,fontSize:9,cursor:"pointer",padding:"2px 8px",fontFamily:"sans-serif",flexShrink:0}}>{lang.skip||"SKIP"}</button>
               </div>
               {hints[step]?.length>0&&(
-                <div style={{background:"rgba(58,81,98,0.05)",border:`1px dashed ${C.light}`,borderRadius:4,padding:"7px 11px",marginBottom:7,display:"flex",alignItems:"flex-start",gap:7}}>
+                <div style={{background:"rgba(58,81,98,0.05)",border:`1px dashed ${C.light}`,borderRadius:4,padding:"7px 11px",marginBottom:7,display:"flex",alignItems:"flex-start",gap:7,flexShrink:0}}>
                   <span style={{fontSize:12,flexShrink:0}}>💡</span>
                   <span style={{fontSize:11,color:C.primary,fontFamily:"Georgia,serif",lineHeight:1.55,fontStyle:"italic"}}>
                     {hints[step][Math.floor(Date.now()/30000)%hints[step].length]}
@@ -669,7 +669,7 @@ export default function App() {
           )}
 
           {panel==="data"&&(
-            <div style={{overflowY:"auto",maxHeight:"calc(100vh - 145px)"}}>
+            <div style={{overflowY:"auto",maxHeight:"calc(100dvh - 145px)"}}>
               {[["PROFILE",[["name","Full Name"],["title","Professional Title"],["why_hire_me","Profile Statement","ta4"]]],
                 ["CONTACT",[["email","Email"],["phone","Phone"],["location","Location"],["website","Website / LinkedIn"]]]
               ].map(([heading,fields])=>(
@@ -724,20 +724,22 @@ export default function App() {
           )}
 
           {panel==="preview"&&(
-            <div style={{overflowY:"auto",maxHeight:"calc(100vh - 145px)"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+            <div style={{overflowY:"auto",maxHeight:"calc(100dvh - 145px)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:6}}>
                 <div>
                   <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1,fontFamily:"sans-serif"}}>CV PREVIEW</span>
-                  <div style={{fontSize:10,color:C.muted,fontFamily:"Georgia,serif",marginTop:2,fontStyle:"italic"}}>Know someone who needs a CV? Share Clairo with them.</div>
+                  <div style={{fontSize:10,color:C.muted,fontFamily:"Georgia,serif",marginTop:2,fontStyle:"italic"}}>Ken je iemand die een cv nodig heeft? Deel Clairo.</div>
                 </div>
-                <div style={{display:"flex",gap:7}}>
-                  <button onClick={()=>{navigator.clipboard.writeText("getclairo.vercel.app").then(()=>alert("Link copied! Share getclairo.vercel.app with anyone who needs a CV."));}} style={{background:C.section,border:`1px solid ${C.light}`,borderRadius:4,color:C.primary,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif",fontWeight:700}}>SHARE APP</button>
+                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                  <button onClick={()=>{navigator.clipboard.writeText("getclairo.vercel.app").then(()=>alert("Link gekopieerd! Deel getclairo.vercel.app met iedereen die een cv nodig heeft."));}} style={{background:C.section,border:`1px solid ${C.light}`,borderRadius:4,color:C.primary,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif",fontWeight:700}}>SHARE APP</button>
                   <button onClick={()=>setPanel("data")} style={{background:"transparent",border:`1px solid ${C.border}`,borderRadius:4,color:C.muted,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif"}}>{lang.editData||"EDIT DATA"}</button>
                   <button onClick={printCV} style={{background:C.primary,border:"none",borderRadius:4,color:C.white,fontSize:9,cursor:"pointer",padding:"3px 12px",fontFamily:"sans-serif",letterSpacing:1}}>{lang.printSave||"PRINT / SAVE PDF"}</button>
                 </div>
               </div>
-              <div style={{transform:"scale(0.82)",transformOrigin:"top left",width:"122%"}}>
-                <CVDocument cvData={cvData} lang={lang}/>
+              <div style={{overflowX:"auto"}}>
+                <div style={{transform:"scale(0.82)",transformOrigin:"top left",width:"122%",minWidth:600}}>
+                  <CVDocument cvData={cvData} lang={lang}/>
+                </div>
               </div>
             </div>
           )}
@@ -750,6 +752,9 @@ export default function App() {
         textarea:focus, input:focus { outline:2px solid ${C.mid}; }
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-thumb { background:${C.light}; border-radius:2px; }
+        @media (max-width:480px) {
+          textarea { font-size:16px !important; }
+        }
       `}</style>
     </div>
   );
