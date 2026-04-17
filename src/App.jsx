@@ -770,7 +770,7 @@ export default function App() {
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:6}}>
                 <div>
                   <span style={{fontSize:9,color:C.primary,fontWeight:700,letterSpacing:1,fontFamily:"sans-serif"}}>CV PREVIEW</span>
-                  <div style={{fontSize:10,color:C.muted,fontFamily:"Georgia,serif",marginTop:2,fontStyle:"italic"}}>Ken je iemand die een cv nodig heeft? Deel Clairo.</div>
+                  <div style={{fontSize:10,color:C.muted,fontFamily:"Georgia,serif",marginTop:2,fontStyle:"italic"}}>{lang.code==="nl"?"Ken je iemand die een cv nodig heeft? Deel de link met die persoon.":lang.code==="es"?"¿Conoces a alguien que necesite un currículum sólido? Comparte Clairo con esa persona.":"Know someone that needs a strong CV? Share Clairo with them."}</div>
                 </div>
                 <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
                   <button onClick={()=>{navigator.clipboard.writeText("getclairo.vercel.app").then(()=>alert("Link gekopieerd! Deel getclairo.vercel.app met iedereen die een cv nodig heeft."));}} style={{background:C.section,border:`1px solid ${C.light}`,borderRadius:4,color:C.primary,fontSize:9,cursor:"pointer",padding:"3px 10px",fontFamily:"sans-serif",fontWeight:700}}>SHARE APP</button>
