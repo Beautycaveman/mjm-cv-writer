@@ -28,7 +28,7 @@ const LANGS = {
     accessChecking:"CHECKING...",
     accessError:"This code is not valid. Please check your purchase confirmation and try again.",
     accessNoCode:"No code yet? Get access at",
-    coaching:"COACHING", cvdata:"CV DATA", cvpreview:"CV PREVIEW",
+    coaching:"COACHING", cvdata:"DATA", cvpreview:"CV",
     skip:"SKIP", send:"SEND", viewCV:"VIEW MY CV",
     editData:"EDIT DATA", printSave:"PRINT / SAVE PDF",
     viewSample:"VIEW SAMPLE CV", changeLang:"Change language",
@@ -108,7 +108,7 @@ const LANGS = {
     accessChecking:"VERIFICANDO...",
     accessError:"Este código no es válido. Verifica tu confirmación de compra e intenta de nuevo.",
     accessNoCode:"¿Sin código? Obtén acceso en",
-    coaching:"COACHING", cvdata:"DATOS CV", cvpreview:"VISTA PREVIA",
+    coaching:"COACHING", cvdata:"DATOS", cvpreview:"CV",
     skip:"OMITIR", send:"ENVIAR", viewCV:"VER MI CV",
     editData:"EDITAR DATOS", printSave:"IMPRIMIR / PDF",
     viewSample:"VER CV DE EJEMPLO", changeLang:"Cambiar idioma",
@@ -142,7 +142,7 @@ const STEPS = ["identity","experience","education","skills","whyhire","contact",
 
 const DUMMY_CV_EN = {
   name:"JORDAN A. REED", title:"Senior Product Manager",
-  why_hire_me:"I do not just manage products, I find the gap between what users are asking for and what they actually need. At every company I have worked at, I have shipped features that changed retention numbers, reduced churn, and opened new revenue lines. I am not a coordinator. I am the person who sees three steps ahead and gets the team there without losing anyone along the way.",
+  why_hire_me:"Every product I have shipped started with a question nobody else was asking. At Foresight, that question led to a 34% drop in user drop-off within 90 days. At Loopline, it became the feature cited in 67% of renewal conversations. I move fast, I bring people with me, and I leave things measurably better than I found them.",
   email:"jordan.reed@email.com", phone:"+1 (312) 555 0194", location:"Chicago, IL, United States", website:"linkedin.com/in/jordanreed",
   skills:["Product Strategy","Agile / Scrum","User Research","Roadmap Planning","Stakeholder Management","SQL & Data Analysis","Figma","A/B Testing"],
   experience:[
@@ -156,7 +156,7 @@ const DUMMY_CV_EN = {
 
 const DUMMY_CV_NL = {
   name:"SARAH VAN DEN BERG", title:"Projectmanager",
-  why_hire_me:"Ik zie niet alleen wat er nu speelt, maar ook wat er aan zit te komen. Bij elk project dat ik heb geleid, heb ik processen verbeterd die direct effect hadden op het resultaat. Ik ben geen uitvoerder. Ik ben degene die drie stappen vooruit denkt en het team daar naartoe brengt.",
+  why_hire_me:"Elk project dat ik heb geleid, heb ik beter achtergelaten dan ik het aantrof. Bij Innovatie BV betekende dat een doorlooptijd die met 40% werd verkort. Bij Consulting Groep Nederland leidde het tot een rapportagesysteem dat het team tot nu toe nog gebruikt. Ik werk gestructureerd, communiceer helder en haal resultaten die zichtbaar zijn.",
   email:"sarah.vandenberg@email.nl", phone:"+31 6 12 34 56 78", location:"Amsterdam, Nederland", website:"linkedin.com/in/sarahvandenberg",
   skills:["Projectmanagement","Stakeholdermanagement","Procesoptimalisatie","Agile / Scrum","Microsoft Office","Communicatie","Probleemoplossend vermogen"],
   experience:[
@@ -170,7 +170,7 @@ const DUMMY_CV_NL = {
 
 const DUMMY_CV_ES = {
   name:"CARLOS MENDOZA", title:"Gerente de Proyectos",
-  why_hire_me:"No solo gestiono proyectos, identifico la brecha entre lo que se planifica y lo que realmente se necesita. En cada empresa donde he trabajado, he implementado mejoras que redujeron costos y aumentaron la eficiencia del equipo. Soy la persona que anticipa los problemas antes de que ocurran.",
+  why_hire_me:"Cada proyecto que he liderado ha terminado mejor de lo que lo encontré. En Tecnologia Futuro, eso significó reducir los tiempos de entrega un 35%. En Soluciones Digitales, la metodología que introduje mejoró la satisfacción del cliente un 28%. Coordino equipos, resuelvo problemas reales y entrego resultados que se pueden medir.",
   email:"carlos.mendoza@email.com", phone:"+34 612 345 678", location:"Madrid, Espana", website:"linkedin.com/in/carlosmendoza",
   skills:["Gestion de Proyectos","Liderazgo de Equipos","Analisis de Datos","Comunicacion","Resolucion de Problemas","Excel Avanzado","Scrum"],
   experience:[
@@ -642,7 +642,7 @@ export default function App() {
             <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:11,cursor:"pointer",padding:"1px 4px",flexShrink:0}}>{selectedLang.flag}</button>
           </div>
           <div style={{display:"flex",gap:3,alignItems:"center",flexShrink:0}}>
-            {[["chat","COACHING"],["data","GEGEVENS"],["preview","VOORBEELD"]].map(([p,l])=>(
+            {[["chat",lang.coaching||"COACHING"],["data",lang.cvdata||"GEGEVENS"],["preview",lang.cvpreview||"VOORBEELD"]].map(([p,l])=>(
               <button key={p} onClick={()=>setPanel(p)} style={{padding:"3px 7px",border:`1px solid ${panel===p?C.white:C.mid}`,borderRadius:4,background:panel===p?C.white:"transparent",color:panel===p?C.primary:C.light,fontSize:7.5,cursor:"pointer",fontFamily:"sans-serif",whiteSpace:"nowrap",flexShrink:0}}>{l}</button>
             ))}
           </div>
