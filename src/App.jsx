@@ -346,7 +346,7 @@ const LangPicker = ({onSelect}) => {
     <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f4f7f9,#e8eef3)",display:"flex",flexDirection:"column",position:"relative"}}>
       <FloatingBg/>
       <div style={{background:C.primary,padding:"14px 28px",position:"relative",zIndex:1}}>
-        <div style={{color:C.accent,fontSize:24,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:6,fontStyle:"italic"}}>clairo</div>
+        <img src="/clairo-logo.svg" alt="clairo" style={{height:20,objectFit:"contain"}}/>
         <div style={{color:C.light,fontSize:8,letterSpacing:3,marginTop:1}}>YOUR CAREER STORY, MADE CLEAR</div>
       </div>
       <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:24,position:"relative",zIndex:1}}>
@@ -461,7 +461,7 @@ export default function App() {
       <FloatingBg/>
       <div style={{background:C.primary,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",zIndex:1}}>
         <div>
-          <div style={{color:C.accent,fontSize:22,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
+          <img src="/clairo-logo.svg" alt="clairo" style={{height:16,objectFit:"contain"}}/>
           <div style={{color:C.light,fontSize:8,letterSpacing:3}}>YOUR CAREER STORY, MADE CLEAR</div>
         </div>
         <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:10,cursor:"pointer",padding:"4px 10px",fontFamily:"sans-serif"}}>
@@ -564,7 +564,7 @@ export default function App() {
       <FloatingBg/>
       <div style={{background:C.primary,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",zIndex:1}}>
         <div>
-          <div style={{color:C.accent,fontSize:22,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:5,fontStyle:"italic"}}>clairo</div>
+          <img src="/clairo-logo.svg" alt="clairo" style={{height:16,objectFit:"contain"}}/>
           <div style={{color:C.light,fontSize:8,letterSpacing:3}}>YOUR CAREER STORY, MADE CLEAR</div>
         </div>
         <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:10,cursor:"pointer",padding:"4px 10px",fontFamily:"sans-serif"}}>
@@ -637,7 +637,7 @@ export default function App() {
       <div style={{background:C.primary,flexShrink:0,position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",overflow:"hidden"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-            <div style={{color:C.accent,fontSize:16,fontFamily:"Georgia,serif",fontWeight:700,letterSpacing:4,fontStyle:"italic"}}>clairo</div>
+            <img src="/clairo-logo.svg" alt="clairo" style={{height:16,objectFit:"contain"}}/>
             <button onClick={()=>setScreen("welcome")} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:8,cursor:"pointer",padding:"2px 6px",fontFamily:"sans-serif",flexShrink:0}}>HOME</button>
             <button onClick={()=>setSelectedLang(null)} style={{background:"transparent",border:`1px solid ${C.mid}`,borderRadius:4,color:C.light,fontSize:11,cursor:"pointer",padding:"1px 4px",flexShrink:0}}>{selectedLang.flag}</button>
           </div>
@@ -686,7 +686,7 @@ export default function App() {
               <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:9,padding:"8px 10px",paddingBottom:4}}>
                 {messages.filter(m=>m.step===step||m.step===undefined).map((m,i)=>(
                   <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",alignItems:"flex-start"}}>
-                    {m.role==="assistant"&&<div style={{width:24,height:24,borderRadius:"50%",background:C.primary,color:C.accent,fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",marginRight:6,flexShrink:0,marginTop:2,fontFamily:"Georgia,serif",fontStyle:"italic"}}>c</div>}
+                    {m.role==="assistant"&&<div style={{width:20,height:20,borderRadius:"50%",background:C.primary,display:"flex",alignItems:"center",justifyContent:"center",marginRight:6,flexShrink:0,marginTop:2,overflow:"hidden",border:`1px solid ${C.light}`}}><img src="/favicon.svg" alt="c" style={{width:12,height:12,filter:"brightness(0) invert(1)"}}/></div>}
                     <div style={{maxWidth:"85%",padding:"9px 13px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?C.primary:C.white,color:m.role==="user"?C.accent:C.dark,fontSize:13,lineHeight:1.65,border:m.role==="assistant"?`1px solid ${C.border}`:"none",fontFamily:"Georgia,serif"}}>
                       {m.content}
                     </div>
