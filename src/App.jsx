@@ -53,7 +53,7 @@ const LANGS = {
       contact:"Almost there. What is your full name, email address, phone number, and location?",
       done:"You have done it. Your CV is ready. Switch to CV PREVIEW to see your design, or edit anything in CV DATA.",
     },
-    cvLabels:{ profile:"Profile", skills:"Skills", education:"Education", experience:"Experience" },
+    cvLabels:{ profile:"Profile", skills:"Skills", education:"Education", experience:"Experience", certifications:"Certifications" },
     done:"%% DONE", testimonialTitle:"What people are saying", sampleCVTitle:"See what your CV could look like",
   },
   nl: {
@@ -93,7 +93,7 @@ const LANGS = {
       contact:"Bijna klaar. Wat is jouw volledige naam, e-mailadres, telefoonnummer en locatie?",
       done:"Je hebt het gedaan. Je cv is klaar. Schakel over naar CV VOORBEELD om je ontwerp te zien.",
     },
-    cvLabels:{ profile:"Profiel", skills:"Vaardigheden", education:"Opleiding", experience:"Ervaring" },
+    cvLabels:{ profile:"Profiel", skills:"Vaardigheden", education:"Opleiding", experience:"Ervaring", certifications:"Certificeringen" },
     done:"%% KLAAR", testimonialTitle:"Wat mensen zeggen", sampleCVTitle:"Zo kan jouw cv eruitzien",
   },
   es: {
@@ -133,7 +133,7 @@ const LANGS = {
       contact:"Casi terminamos. ¿Cuál es tu nombre completo, correo electrónico, teléfono y ubicación?",
       done:"Lo lograste. Tu CV está listo. Cambia a VISTA PREVIA para ver tu diseño.",
     },
-    cvLabels:{ profile:"Perfil", skills:"Habilidades", education:"Educación", experience:"Experiencia" },
+    cvLabels:{ profile:"Perfil", skills:"Habilidades", education:"Educación", experience:"Experiencia", certifications:"Certificaciones" },
     done:"%% LISTO", testimonialTitle:"Lo que dicen las personas", sampleCVTitle:"Así podría verse tu CV",
   },
 };
@@ -230,7 +230,7 @@ const DiamondBanner = ({height=52}) => {
 
 // ── CV DOCUMENT ───────────────────────────────────────────────────────────
 const CVDocument = ({cvData,lang}) => {
-  const {name,title,why_hire_me,email,phone,location,website,skills,experience,education}=cvData;
+  const {name,title,why_hire_me,email,phone,location,website,skills,experience,education,certifications}=cvData;
   const L=lang ? lang.cvLabels : {profile:"Profile",skills:"Skills",education:"Education",experience:"Experience"};
   const hasData=name||why_hire_me||experience.length>0;
   if(!hasData) return <div style={{padding:40,textAlign:"center",color:C.muted,fontFamily:"Georgia,serif",fontSize:13,background:C.white,minHeight:"297mm"}}>Complete the coaching conversation first.</div>;
@@ -259,6 +259,7 @@ const CVDocument = ({cvData,lang}) => {
           {why_hire_me&&<div style={{marginBottom:18}}><SL>{L.profile}</SL><div style={{fontSize:9.5,lineHeight:1.75,color:C.dark}}>{why_hire_me}</div></div>}
           {skills.length>0&&<div style={{marginBottom:18}}><SL>{L.skills}</SL>{skills.map((sk,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:7,marginBottom:5}}><span style={{width:4,height:4,background:C.mid,borderRadius:"50%",flexShrink:0}}/><span style={{fontSize:9.5,color:C.dark,fontFamily:"sans-serif"}}>{sk}</span></div>)}</div>}
           {education.length>0&&<div><SL>{L.education}</SL>{education.map((ed,i)=><div key={i} style={{marginBottom:12}}><div style={{fontSize:10,fontWeight:700,color:C.dark,fontFamily:"sans-serif",lineHeight:1.3}}>{ed.degree}</div><div style={{fontSize:9,color:C.primary,fontFamily:"sans-serif",marginTop:2,fontWeight:600}}>{ed.institution}</div><div style={{fontSize:8.5,color:C.muted,fontFamily:"sans-serif",marginBottom:3}}>{ed.years}</div>{ed.description&&<div style={{fontSize:9,color:C.muted,lineHeight:1.55}}>{ed.description}</div>}</div>)}</div>}
+          {certifications?.length>0&&<div style={{marginTop:14}}><SL>{L.certifications||"Certifications"}</SL>{certifications.map((cert,i)=><div key={i} style={{marginBottom:12}}><div style={{fontSize:10,fontWeight:700,color:C.dark,fontFamily:"sans-serif",lineHeight:1.3}}>{cert.name}</div><div style={{fontSize:9,color:C.primary,fontFamily:"sans-serif",marginTop:2,fontWeight:600}}>{cert.organization}</div><div style={{fontSize:8.5,color:C.muted,fontFamily:"sans-serif",marginBottom:3}}>{cert.date}</div>{cert.skills&&<div style={{fontSize:9,color:C.muted,lineHeight:1.55}}>{cert.skills}</div>}{cert.url&&<div style={{fontSize:8,color:C.primary,fontFamily:"sans-serif",marginTop:2,wordBreak:"break-all"}}>{cert.url}</div>}</div>)}</div>}
         </div>
         <div style={{padding:"20px 24px"}}>
           {experience.length>0&&<div><SL>{L.experience}</SL>{experience.map((ex,i)=><div key={i} style={{marginBottom:16,paddingBottom:14,borderBottom:i<experience.length-1?`1px solid rgba(213,221,227,0.6)`:"none",position:"relative"}}><div style={{position:"absolute",left:-24,top:5,width:6,height:6,borderRadius:"50%",background:C.primary,border:`2px solid ${C.white}`,outline:`1px solid ${C.light}`}}/><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{fontSize:11.5,fontWeight:700,color:C.dark,fontFamily:"sans-serif",lineHeight:1.2}}>{ex.title}</div><div style={{fontSize:8.5,color:C.white,fontFamily:"sans-serif",whiteSpace:"nowrap",marginLeft:10,background:C.primary,padding:"2px 8px",borderRadius:10,flexShrink:0}}>{ex.years}</div></div><div style={{fontSize:9.5,color:C.primary,fontFamily:"sans-serif",marginTop:3,marginBottom:6,fontWeight:600}}>{ex.company}</div><div style={{fontSize:10,color:"#333",lineHeight:1.75}}>{ex.description}</div></div>)}</div>}
@@ -431,7 +432,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [panel, setPanel] = useState(()=>saved?.panel||"chat");
   const [pendingDuplicate, setPendingDuplicate] = useState(null);
-  const [cvData, setCvData] = useState(()=>saved?.cvData||{name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});
+  const [cvData, setCvData] = useState(()=>saved?.cvData||{name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[],certifications:[]});
   const messagesEnd = useRef(null);
   const stepRef = useRef(step);
 
@@ -586,7 +587,7 @@ export default function App() {
           {(step==="done" || localStorage.getItem("clairo_step")==="done") && (
             <div style={{marginTop:12,fontSize:11,color:C.muted,fontFamily:"sans-serif"}}>
               Previous session complete.{" "}
-              <span style={{cursor:"pointer",textDecoration:"underline",color:C.primary}} onClick={()=>{clearSession();localStorage.removeItem("clairo_step");localStorage.removeItem("clairo_msgs");localStorage.removeItem("clairo_cv");localStorage.removeItem("clairo_screen");setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});}}>
+              <span style={{cursor:"pointer",textDecoration:"underline",color:C.primary}} onClick={()=>{clearSession();localStorage.removeItem("clairo_step");localStorage.removeItem("clairo_msgs");localStorage.removeItem("clairo_cv");localStorage.removeItem("clairo_screen");setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[],certifications:[]});}}>
                 Start a new CV
               </span>
             </div>
@@ -703,7 +704,7 @@ export default function App() {
               ):(
                 <div style={{padding:"8px 10px",borderTop:`1px solid ${C.border}`,display:"flex",flexDirection:"column",gap:8,flexShrink:0}}>
                   <button onClick={()=>setPanel("preview")} style={{width:"100%",padding:"11px 0",background:C.primary,color:C.accent,border:"none",borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>{lang.viewCV||"BEKIJK MIJN CV"}</button>
-                  <button onClick={()=>{clearSession();setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[]});setMessages([{role:"assistant",content:getOpener("identity")}]);}} style={{width:"100%",padding:"10px 0",background:"transparent",color:C.primary,border:`1px solid ${C.primary}`,borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>NIEUW CV STARTEN</button>
+                  <button onClick={()=>{clearSession();setStep("identity");stepRef.current="identity";setMessages([]);setPanel("chat");setCvData({name:"",title:"",why_hire_me:"",email:"",phone:"",location:"",website:"",skills:[],experience:[],education:[],certifications:[]});setMessages([{role:"assistant",content:getOpener("identity")}]);}} style={{width:"100%",padding:"10px 0",background:"transparent",color:C.primary,border:`1px solid ${C.primary}`,borderRadius:6,fontSize:11,letterSpacing:2,cursor:"pointer",fontFamily:"sans-serif"}}>NIEUW CV STARTEN</button>
                 </div>
               )}
             </div>
@@ -747,7 +748,8 @@ export default function App() {
                 </div>
               </div>
               {[["experience","WORK EXPERIENCE",{title:"",company:"",years:"",description:""},[["title","Job Title"],["company","Company"],["years","Years"],["description","What changed because of your work here?","ta"]]],
-                ["education","EDUCATION",{degree:"",institution:"",years:"",description:""},[["degree","Degree"],["institution","Institution"],["years","Years"],["description","Key achievement"]]]
+                ["education","EDUCATION",{degree:"",institution:"",years:"",description:""},[["degree","Degree"],["institution","Institution"],["years","Years"],["description","Key achievement"]]],
+                ["certifications","CERTIFICATIONS",{name:"",organization:"",date:"",url:"",skills:""},[["name","Certificate Title (exact name)"],["organization","Issuing Organization"],["date","Date of Completion (Month Year)"],["url","Verification Link (URL, if available)"],["skills","Key Skills Gained"]]]
               ].map(([field,heading,empty,fields])=>(
                 <div key={field} style={{marginBottom:11}}>
                   <div style={{background:C.primary,color:C.accent,padding:"6px 13px",fontSize:9,letterSpacing:2,fontFamily:"sans-serif",borderRadius:"4px 4px 0 0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
