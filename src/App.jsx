@@ -729,9 +729,20 @@ export default function App() {
               <div style={{marginBottom:11}}>
                 <div style={{background:C.primary,color:C.accent,padding:"6px 13px",fontSize:9,letterSpacing:2,fontFamily:"sans-serif",borderRadius:"4px 4px 0 0"}}>SKILLS</div>
                 <div style={{background:C.white,border:`1px solid ${C.border}`,borderTop:"none",borderRadius:"0 0 4px 4px",padding:12}}>
-                  <input style={iSt} value={cvData.skills.join(", ")} onChange={e=>setCvData(d=>({...d,skills:e.target.value.split(",").map(s=>s.trim()).filter(Boolean)}))} placeholder="Power BI, SQL, Excel..."/>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:7}}>
-                    {cvData.skills.map((sk,i)=><span key={i} style={{background:C.section,color:C.primary,fontSize:10,padding:"3px 9px",borderRadius:10,fontFamily:"sans-serif"}}>{sk}</span>)}
+                  <div style={{display:"flex",gap:6,marginBottom:8}}>
+                    <input id="skill-input" style={{...iSt,marginTop:0,flex:1}} placeholder="Type a skill and press Add..."
+                      onKeyDown={e=>{if(e.key==="Enter"){const v=e.target.value.trim();if(v){setCvData(d=>({...d,skills:[...new Set([...d.skills,v])]}));e.target.value="";}e.preventDefault();}}}/>
+                    <button onClick={()=>{const inp=document.getElementById("skill-input");const v=inp.value.trim();if(v){setCvData(d=>({...d,skills:[...new Set([...d.skills,v])]}));inp.value="";}}}
+                      style={{padding:"6px 12px",background:C.primary,color:C.white,border:"none",borderRadius:5,fontSize:10,cursor:"pointer",fontFamily:"sans-serif",whiteSpace:"nowrap",flexShrink:0}}>+ ADD</button>
+                  </div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+                    {cvData.skills.map((sk,i)=>(
+                      <span key={i} style={{background:C.section,color:C.primary,fontSize:10,padding:"3px 9px",borderRadius:10,fontFamily:"sans-serif",display:"flex",alignItems:"center",gap:5}}>
+                        {sk}
+                        <span onClick={()=>setCvData(d=>({...d,skills:d.skills.filter((_,idx)=>idx!==i)}))} style={{cursor:"pointer",color:C.muted,fontWeight:700,fontSize:11,lineHeight:1}}>×</span>
+                      </span>
+                    ))}
+                    {cvData.skills.length===0&&<div style={{fontSize:11,color:C.muted,fontStyle:"italic"}}>Skills are auto-filled by the coach. You can also add them manually above.</div>}
                   </div>
                 </div>
               </div>
