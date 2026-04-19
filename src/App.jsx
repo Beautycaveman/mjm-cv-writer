@@ -447,7 +447,7 @@ export default function App() {
     if(saved?.langCode && LANGS[saved.langCode]) return LANGS[saved.langCode];
     return null;
   });
-  const [accessCode, setAccessCode] = useState(()=>localStorage.getItem("clairo_access_code")||"");
+  const [accessCode, setAccessCode] = useState(()=>localStorage.getItem("clairo_access_code")||"FREE");
   const [screen, setScreen] = useState(()=>saved?.screen||"welcome");
   const [step, setStep] = useState(()=>saved?.step||"identity");
   const [messages, setMessages] = useState(()=>saved?.messages||[]);
@@ -464,7 +464,7 @@ export default function App() {
 
   // Auto-save session whenever anything important changes
   useEffect(()=>{
-    if(!selectedLang||!accessCode) return;
+    if(!selectedLang) return;
     saveSession({
       langCode: selectedLang.code,
       screen, step, messages, panel, cvData,
@@ -480,7 +480,7 @@ export default function App() {
   const getOpener = (step) => lang.openers?.[step] || LANGS.en.openers[step];
 
   // Step 2: Access gate
-  if(!accessCode) return (
+  if(false && !accessCode) return (
     <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f4f7f9,#e8eef3)",display:"flex",flexDirection:"column",position:"relative"}}>
       <FloatingBg/>
       <div style={{background:C.primary,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",zIndex:1}}>
