@@ -12,6 +12,12 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
+  const { messages, max_tokens, system } = req.body || {};
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: "Invalid request" });
+  }
+
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -20,12 +26,17 @@ export default async function handler(req, res) {
         "x-api-key": process.env.VITE_ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        messages,
+        max_tokens,
+        system,
+      }),
     });
 
     const data = await response.json();
     return res.status(response.status).json(data);
-  } catch (error) {
-    return res.status(500).json({ error: "API call failed", details: error.message });
+  } catch {
+    return res.status(500).json({ error: "API call failed" });
   }
 }
